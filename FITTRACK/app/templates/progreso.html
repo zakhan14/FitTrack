@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gráfico de Rendimiento</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <link rel="stylesheet" href="{% static 'css/progress.css' %}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar-left">
+      <a href="{% url 'index' %}" id="h1">FTR</a>
+    </div>
+
+    <nav class="navbar-center">
+      <a href="{% url 'entrenamiento' %}">Entrenamiento</a>
+      <a href="{% url 'progreso' %}">Progreso</a>
+    </nav>
+
+    <div class="navbar-right">
+      <button class="btn">Log Out</button>
+    </div>
+  </header>
+
+  <h2 style="text-align: left; margin-left: 26%;">Introduce tus valores</h2>
+  <div id="contenedor-formulario-grafico">
+    <form id="calcForm">
+      <label>Altura (cm):
+        <input type="number" name="Altura" min="0" max="250" placeholder="Ej: 180" required />
+      </label>
+      <label>Peso (kg):
+        <input type="number" name="Peso" min="0" max="200" step="0.1" placeholder="Ej: 75" required />
+      </label>
+      <label>Grasa (%):
+        <input type="number" name="Grasa" min="0" max="100" step="0.1" placeholder="Ej: 15" required />
+      </label>
+      <label>Masa Muscular (%):
+        <input type="number" name="Musculo" min="0" max="100" step="0.1" placeholder="Ej: 40" required />
+      </label>
+      <label>Agua Corporal (%):
+        <input type="number" name="Liquidos" min="0" max="100" step="0.1" placeholder="Ej: 60" required />
+      </label>
+      <button type="submit">Generar gráfico</button>
+    </form>
+    
+    <div id="main"></div>
+  </div>
+
+  <script src="{% static 'js/progress.js' %}"></script>
+
+  <footer class="footer">
+    <div class="footer-left">
+      <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo">
+      <div class="social-icons">
+        <a href="https://www.facebook.com/ZukaKhantadze" target="_blank" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://www.tiktok.com/@_zakhan_" target="_blank" aria-label="TikTok">
+          <i class="fab fa-tiktok"></i>
+        </a>
+        <a href="https://www.instagram.com/_zakhan_" target="_blank" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+    </div>
+    <div class="footer-columns">
+      <div class="footer-column">
+        <h4>Contacto</h4>
+        <p>contacto@fittracker.com</p>
+        <p>+34 012 456 789</p>
+      </div>
+      <div class="footer-column">
+        <h4>Dirección</h4>
+        <p>Calle Inexistente 13</p>
+        <p>Madrid, España</p>
+      </div>
+      <div class="footer-column">
+        <h4>Redes Sociales</h4>
+        <p>Síguenos en Facebook, <br>TikTok e Instagram.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

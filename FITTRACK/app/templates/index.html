@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitTracker</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="navbar">
+    <div class="navbar-left">
+      <h1 href="/index.html" id="h1">FTR</h1>
+    </div>
+    <nav class="navbar-center">
+      <a href="{% url 'entrenamiento' %}">Entrenamiento</a>
+      <a href="{% url 'progreso' %}">Progreso</a>
+    </nav>
+  <div class="header-buttons">
+    <button class="btn">Iniciar Sesión</button>
+    <button class="btn">Registrarse</button>
+  </div>
+  </header>
+
+<main>
+  <section class="main-text">
+    <h1>Tu Diario de Entrenamiento <br> para Rendimiento y Progreso</h1>
+    <p>Registra tus entrenamientos, analiza tu progreso y alcanza tus objetivos con Fittracker.</p>
+    <button class="btn-main">Comenzar Gratis</button>
+  </section>
+  <section class="main-image">
+    <img src="{% static 'images/entrenamiento.jpg' %}" alt="Entrenamiento deportivo" />
+  </section>
+</main>
+  <footer class="footer">
+    <div class="footer-left">
+      <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo">
+      <div class="social-icons">
+        <a href="https://www.facebook.com/ZukaKhantadze" target="_blank" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://www.tiktok.com/@_zakhan_" target="_blank" aria-label="TikTok">
+          <i class="fab fa-tiktok"></i>
+        </a>
+        <a href="https://www.instagram.com/_zakhan_" target="_blank" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+    </div>
+      <div class="footer-columns">
+    <div class="footer-column">
+      <h4>Contacto</h4>
+      <p>contacto@fittracker.com</p>
+      <p>+34 012 456 789</p>
+    </div>
+    <div class="footer-column">
+      <h4>Dirección</h4>
+      <p>Calle Inexistente 13</p>
+      <p>Madrid, España</p>
+    </div>
+    <div class="footer-column">
+      <h4>Redes Sociales</h4>
+      <p>Síguenos en Facebook, <br>TikTok e Instagram.</p>
+    </div>
+  </div>
+  </footer>
+</body>
+</html>
+
