@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registro de Entrenamiento</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar-left">
+      <a href="../index.html" id="h1">FTR</a>
+    </div>
+    <nav class="navbar-center">
+      <a href="/templates/entrenamiento.html">Entrenamiento</a>
+      <a href="/templates/progreso.html">Progreso</a>
+    </nav>
+    <div class="navbar-right">
+      <button class="nav-button">Log Out</button>
+    </div>
+  </header>
+
+  <div class="entreno-container">
+    <div id="calendar">
+      <header>
+        <button id="prev">&lt;</button>
+        <div id="monthYear"></div>
+        <button id="next">&gt;</button>
+      </header>
+      <div class="weekdays">
+        <div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div>
+      </div>
+      <div class="days" id="daysContainer">
+        <!-- Los días se generan con JS -->
+      </div>
+    </div>
+
+    <main>
+      <h2>Registrar Entrenamiento</h2>
+      <form id="formulario-entreno">
+        <input type="date" name="fecha" required />
+        <select name="tipo" required>
+          <option value="">Tipo de entrenamiento</option>
+          <option value="fuerza">Fuerza</option>
+          <option value="resistencia">Resistencia</option>
+          <option value="técnica">Técnica</option>
+          <option value="partido">Partido</option>
+        </select>
+        <input type="text" name="descripcion" placeholder="Descripción breve" required />
+        <button type="submit">Guardar</button>
+      </form>
+    </main>
+  </div>
+  <footer class="footer">
+    <div class="footer-left">
+      <img src="/static/images/logo.png" alt="Logo" class="logo">
+      <div class="social-icons">
+        <a href="https://www.facebook.com/ZukaKhantadze" target="_blank" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://www.tiktok.com/@_zakhan_" target="_blank" aria-label="TikTok">
+          <i class="fab fa-tiktok"></i>
+        </a>
+        <a href="https://www.instagram.com/_zakhan_" target="_blank" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+    </div>
+      <div class="footer-columns">
+    <div class="footer-column">
+      <h4>Contacto</h4>
+      <p>contacto@fittracker.com</p>
+      <p>+34 012 456 789</p>
+    </div>
+    <div class="footer-column">
+      <h4>Dirección</h4>
+      <p>Calle Inexistente 13</p>
+      <p>Madrid, España</p>
+    </div>
+    <div class="footer-column">
+      <h4>Redes Sociales</h4>
+      <p>Síguenos en Facebook, <br>TikTok e Instagram.</p>
+    </div>
+  </div>
+  </footer>
+  <script src="/static/js/entrenamiento.js" type="module"></script>
+</body>
+</html>

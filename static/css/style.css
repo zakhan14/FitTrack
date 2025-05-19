@@ -1,0 +1,459 @@
+/* Estilos generales del cuerpo */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #E2E2E2;
+  color: #000000;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 2.2em;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  text-align: center;
+  color: #000000;
+}
+
+/* Header como contenedor Flex */
+header.navbar {
+  background-color: #a9bbd8;
+  color: #000000;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Título de la izquierda */
+#h1_index {
+  padding-left: 20px;
+  color: #000000;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  font-size: 1.5em;
+}
+
+#h1 {
+  color: #000000;
+  text-decoration: none;
+  display: block;
+  font-size: 2em;
+  margin-block-start: 0.67em;
+  margin-block-end: 0.67em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+  unicode-bidi: isolate;
+}
+
+/* Enlaces del centro */
+header {
+    background-color: #a9bbd8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  header .logo {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #000000;
+  }
+  nav.navbar-center {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+nav.navbar-center a {
+  color: #000000;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.1em;
+  font-weight: 600;
+  position: relative;
+}
+nav.navbar-center a::after {
+  content: '';
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  background-color: #000000;
+  left: 0;
+  bottom: -4px;
+  transition: width 0.3s;
+}
+
+nav.navbar-center a:hover::after {
+  width: 100%;
+}
+
+/* Botones de la derecha */
+.navbar-right {
+  display: flex;
+  flex-direction: row;
+  gap: 0.8rem;
+}
+
+.nav-button {
+  background-color: #000000;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  transition: all 0.3s ease-in-out;
+}
+
+.nav-button:hover {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000;
+}
+
+/* Contenedor principal para calendario y formulario */
+.entreno-container {
+  display: flex;
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  color: #000;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Calendario a la izquierda, ancho fijo */
+.entreno-container #calendar {
+  flex: 0 0 350px;
+  background: #a9bbd8;
+  border-radius: 8px;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+/* Header y botones dentro del calendario */
+.entreno-container #calendar > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.entreno-container #calendar button {
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  color: #000;
+}
+
+.entreno-container #calendar button:hover {
+  background-color: #e2e2e2;
+}
+
+/* Días de la semana (Lun, Mar, ...) */
+.entreno-container #calendar .weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+/* Días del calendario en grid */
+.entreno-container #calendar .days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  text-align: center;
+}
+
+/* Botones para cada día */
+.entreno-container #calendar .days button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  color: #000;
+}
+
+.entreno-container #calendar .days button:hover {
+  background-color: #e2e2e2;
+}
+
+/* Día actual destacado */
+.entreno-container #calendar .days button.today {
+  background-color: #000000;
+  color: white;
+}
+
+/* Días con entrenamiento */
+.entreno-container #calendar .days button.entrenamiento {
+  background-color: #F9713C;
+  color: white;
+  font-weight: 700;
+}
+
+/* Main con formulario a la derecha, ocupa resto del espacio */
+.entreno-container main {
+  flex: 1;
+  max-width: 600px;
+}
+
+/* Ajustes para el formulario dentro del main */
+.entreno-container main form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.entreno-container main form input,
+.entreno-container main form select,
+.entreno-container main form button {
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-family: 'Roboto', sans-serif;
+}
+
+.entreno-container main form button {
+  background-color: #000000;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.entreno-container main form button:hover {
+  background-color: #E2E2E2;
+  color: #000000;
+}
+
+/* Pie de página */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 40px;
+  background-color: #fff;
+  border-top: 1px solid #ccc;
+  font-family: Arial, sans-serif;
+}
+
+.footer-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.social-icons {
+  margin-top: 15px;
+  display: flex;
+  gap: 15px;
+}
+
+.social-icons a {
+  color: gray;
+  font-size: 20px;
+  text-decoration: none;
+}
+
+.footer-columns {
+  display: flex;
+  gap: 60px;
+}
+
+.footer-column h4 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.footer-column p {
+  font-size: 14px;
+  color: gray;
+  margin:0;
+}
+
+/* Responsive: en pantallas pequeñas apila vertical */
+@media (max-width: 768px) {
+  .entreno-container {
+    flex-direction: column;
+    padding: 0 1rem;
+  }
+
+  .entreno-container #calendar,
+  .entreno-container main {
+    max-width: 100%;
+    flex: none;
+  }
+  header.navbar {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  nav.navbar-center {
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .navbar-right {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* Responsividad extra para móviles muy pequeños */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.6em;
+    margin-bottom: 1rem;
+  }
+
+  .entreno-container main form input,
+  .entreno-container main form select,
+  .entreno-container main form button {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+}
+
+form#calcForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto 40px auto;
+  background-color: #fff;
+  padding: 20px 25px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+form#calcForm label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: #415a77;
+  font-size: 1rem;
+  text-align: left;
+  width: 100%;
+}
+
+form#calcForm input[type="number"],
+form#calcForm select {
+  padding: 8px 10px;
+  font-size: 1rem;
+  margin-top: 5px;
+  border: 1.5px solid #a9bbd8;
+  border-radius: 5px;
+  outline-color: #415a77;
+  font-family: 'Roboto', sans-serif;
+}
+
+form#calcForm button {
+  margin-top: 10px;
+  background-color: #415a77;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+form#calcForm button:hover {
+  background-color: #2c3e50;
+}
+
+/* Resultado */
+#resultado {
+  max-width: 350px;
+  margin: 0 auto;
+  padding: 15px 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  color: #333;
+  white-space: pre-line; /* para respetar saltos de línea */
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.1rem;
+  text-align: left;
+}
+
+#barra-imc-wrapper {
+  width: 100%;
+  height: 25px;
+  background-color: #ccc;
+  border-radius: 12px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+#barra-imc {
+  height: 100%;
+  width: 0%;
+  background-color: green;
+  transition: width 0.5s ease, background-color 0.5s ease;
+}
+/* Contenedor para el formulario y el gráfico */
+#contenedor-formulario-grafico {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  gap: 2rem;
+}
+
+/* Formulario alineado a la izquierda */
+#calcForm {
+  margin: 0;
+}
+
+/* Gráfico alineado a la derecha */
+#main {
+  width: 600px;
+  height: 500px;
+}
+.social-icons a {
+  color: gray;
+  font-size: 18px; /* más grande para que se vean mejor */
+  margin: 0 10px;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #F9713C; /* color al pasar el mouse */
+}
