@@ -227,6 +227,8 @@ nav.navbar-center a:hover::after {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  background-color: #a9bbd8;
+  border-radius: 10%;
 }
 
 .entreno-container main form input,

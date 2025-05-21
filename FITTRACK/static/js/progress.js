@@ -5,7 +5,7 @@ document.getElementById('calcForm').addEventListener('submit', function (e) {
   e.preventDefault();
 
   const data = Array.from(new FormData(this).values()).map(v => Number(v));
-
+  
   const option = {
     backgroundColor: 'transparent',
     title: {

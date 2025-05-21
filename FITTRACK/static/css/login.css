@@ -67,7 +67,6 @@ nav.navbar-center a:hover::after {
   flex-direction: row;
   gap: 0.8rem;
 }
-
 .btn {
   background-color: #000000;
   color: white;
@@ -78,6 +77,7 @@ nav.navbar-center a:hover::after {
   font-family: 'Inter', sans-serif;
   font-weight: 500;
   transition: all 0.3s ease-in-out;
+  justify-content: right;
 }
 
 .btn:hover {
@@ -90,7 +90,6 @@ nav.navbar-center a:hover::after {
   main {
     max-width: 1200px;
     margin: 50px auto;
-    display: flex;
     align-items: center;
     gap: 60px;
     padding: 0 20px;
@@ -140,7 +139,181 @@ nav.navbar-center a:hover::after {
     border-radius: 20px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.15);
   }
+.auth-container {
+  max-width: 400px;
+  margin: 4rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
 
+.auth-title {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #1c1c1c;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #333;
+}
+
+.form-group input {
+  padding: 0.6rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  transition: border 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #a9bbd8;
+  outline: none;
+  background-color: #fff;
+}
+
+.form-group .errorlist {
+  color: #d9534f;
+  font-size: 0.9rem;
+  margin-top: 0.2rem;
+}
+
+.btn-main {
+  background-color: #000;
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 20px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-main:hover {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000;
+}
+
+.auth-alt {
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.auth-alt .btn {
+  margin-left: 0.3rem;
+  background-color: transparent;
+  color: #000;
+  text-decoration: underline;
+  padding: 0;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+}
+/* Contenedor principal del login */
+.login-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 30px 25px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  font-family: 'Inter', sans-serif;
+}
+
+/* Título */
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+/* Formulario */
+.login-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Grupos de campos */
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Etiquetas */
+.form-group label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #34495e;
+  font-size: 14px;
+}
+
+/* Inputs de texto */
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input {
+  padding: 10px 12px;
+  border: 1.8px solid #ccc;
+  border-radius: 5px;
+  font-size: 15px;
+  transition: border-color 0.3s ease;
+}
+
+/* Focus en input */
+.form-group input[type="text"]:focus,
+.form-group input[type="password"]:focus,
+.form-group input:focus {
+  border-color: #5dade2;
+  outline: none;
+}
+
+/* Mensajes de error */
+.error {
+  margin-top: 6px;
+  color: #e74c3c;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Botón de submit */
+.btn {
+  background-color: #000000;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn:hover {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000;
+}
   /* Footer */
 footer {
   display: flex;
@@ -182,6 +355,7 @@ footer {
 .footer-columns {
   display: flex;
   gap: 60px;
+  flex-wrap: wrap;
 }
 
 .footer-column h4 {
@@ -192,11 +366,10 @@ footer {
 .footer-column p {
   font-size: 14px;
   color: gray;
-  margin:0;
+  margin: 0;
 }
-
   /* Responsive */
-  @media(max-width: 900px) {
+  @media(max-width: 700px) {
     main {
       flex-direction: column;
       text-align: center;

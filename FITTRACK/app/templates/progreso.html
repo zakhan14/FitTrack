@@ -5,22 +5,23 @@
   <meta charset="UTF-8" />
   <title>Gráfico de Rendimiento</title>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <link rel="icon" href="{% static 'images/logo.png' %}">
   <link rel="stylesheet" href="{% static 'css/progress.css' %}" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
 <body>
   <header class="navbar">
     <div class="navbar-left">
-      <a href="{% url 'index' %}" id="h1">FTR</a>
+      <a href="{% url 'index' %}" ><h1>FTR</h1></a>
     </div>
 
     <nav class="navbar-center">
+      <a href="{% url 'index' %}">Inicio</a>
       <a href="{% url 'entrenamiento' %}">Entrenamiento</a>
-      <a href="{% url 'progreso' %}">Progreso</a>
     </nav>
 
     <div class="navbar-right">
-      <button class="btn">Log Out</button>
+      <a href="{% url 'index' %}" class="btn">Log Out</a>
     </div>
   </header>
 

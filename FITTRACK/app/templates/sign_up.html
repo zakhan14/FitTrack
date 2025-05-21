@@ -7,6 +7,7 @@
     <title>FitTracker | Registro</title>
 
     <!-- Iconos y fuentes -->
+     <link rel="icon" href="{% static 'images/logo.png' %}">
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -22,15 +23,12 @@
 
   <body>
     <!-- ===== Header ===== -->
-    <header class="navbar">
-      <div class="navbar-left">
-        <h1>FTR</h1>
-      </div>
-    </header>
+    
 
     <!-- ===== Main auth container ===== -->
     <main class="auth-container">
-      <h2 class="auth-title">Crear cuenta</h2>
+      <img src="{% static 'images/logo.png' %}" alt="" class="logo">
+      <h2 class="auth-title">Crear cuenta</h2><br>
 
       <form method="post" class="auth-form">
         {% csrf_token %}
