@@ -18,7 +18,7 @@
     />
 
     <!-- Tu CSS principal -->
-    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/sign_up.css' %}" />
   </head>
 
   <body>
@@ -27,7 +27,7 @@
 
     <!-- ===== Main auth container ===== -->
     <main class="auth-container">
-      <img src="{% static 'images/logo.png' %}" alt="" class="logo">
+      <a href="{% url 'index' %}" ><img src="{% static 'images/logo.png' %}" class="logo" alt=""></a>
       <h2 class="auth-title">Crear cuenta</h2><br>
 
       <form method="post" class="auth-form">

@@ -15,7 +15,7 @@
 <body>
 
   <main class="auth-container">
-  <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" id="logo" />
+  <a href="{% url 'index' %}" ><img src="{% static 'images/logo.png' %}" class="logo" alt=""></a>
     <h2>Iniciar sesión</h2>
     <form method="post" action="{% url 'log_in' %}">
       {% csrf_token %}
