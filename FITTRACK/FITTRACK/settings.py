@@ -77,7 +77,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'FITTRACK.wsgi.application'
 
-
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'FITTRACK.settings')
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
