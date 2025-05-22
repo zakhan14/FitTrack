@@ -28,5 +28,11 @@ class SignUpForm(forms.ModelForm):
 
 
 class CustomLoginForm(AuthenticationForm):
-    username = forms.CharField(label='Nickname o Correo electrónico')
-    password = forms.CharField(widget=forms.PasswordInput, label='Contraseña')
+    username = forms.CharField(
+        label='Nickname o Correo electrónico',
+        widget=forms.TextInput(attrs={'autocomplete': 'username'})
+    )
+    password = forms.CharField(
+        label='Contraseña',
+        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password'})
+    )

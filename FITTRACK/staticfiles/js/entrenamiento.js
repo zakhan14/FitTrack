@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
           tag.title = 'Ver detalles';
 
           tag.addEventListener('click', () => {
-            window.location.href = `/templates/detalle.html?id=${ent.id}`;
+            window.location.href = `/detalle?id=${ent.id}`;
           });
 
           dayDiv.appendChild(tag);

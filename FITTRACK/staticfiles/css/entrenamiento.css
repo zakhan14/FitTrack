@@ -227,7 +227,7 @@ nav.navbar-center a:hover::after {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  background-color: #a9bbd8;
+  background-color: transparent;
   border-radius: 10%;
 }
 
@@ -307,7 +307,7 @@ footer {
 }
 
   /* Responsive */
-  @media(max-width: 900px) {
+  @media(max-width: 1800px) {
     main {
       flex-direction: column;
       text-align: center;

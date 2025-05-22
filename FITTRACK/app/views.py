@@ -3,6 +3,9 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.conf import settings
+
 from .forms import SignUpForm, CustomLoginForm
 
 
@@ -18,28 +21,39 @@ def sign_up(request):
             user.set_password(form.cleaned_data['password'])
             user.save()
             login(request, user)
-            return redirect('index')  # redirige a la home
+            return redirect('index')
     else:
         form = SignUpForm()
     return render(request, 'sign_up.html', {'form': form})
 
 
 def log_in(request):
+    next_url = request.GET.get('next', 'index')  # Redirección por defecto
+
     if request.method == 'POST':
-        form = CustomLoginForm(data=request.POST)
+        form = CustomLoginForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('index')  # redirige a la home
+
+            # Validar que la URL sea segura
+            redirect_to = request.POST.get('next', next_url)
+            if url_has_allowed_host_and_scheme(redirect_to, allowed_hosts={request.get_host()}):
+                return redirect(redirect_to)
+            else:
+                return redirect('index')
     else:
         form = CustomLoginForm()
-    return render(request, 'log_in.html', {'form': form})
+
+    return render(request, 'log_in.html', {
+        'form': form,
+        'next': next_url,
+    })
 
 
 @login_required(login_url='log_in')
 def detalle(request):
     id = request.GET.get('id')
-    # Aquí usas el id para lo que necesites (buscar en DB, etc)
     return render(request, 'detalle.html', {'id': id})
 
 
@@ -56,9 +70,7 @@ def entrenamiento(request):
         tipo = request.POST.get('tipo')
         descripcion = request.POST.get('descripcion')
 
-        # Aquí validaré los datos y guardar en la DB
-        # Ejemplo:
-        # Entrenamiento.objects.create(fecha=fecha, tipo=tipo, descripcion=descripcion)
+        # Aquí guardarías los datos en la base de datos
 
         return redirect('entrenamiento')
 
@@ -66,6 +78,5 @@ def entrenamiento(request):
 
 
 def custom_logout(request):
-    if request.method == "POST":
-        logout(request)
-    return redirect('index')  # Redirige a la página de inicio
+    logout(request)
+    return redirect('index')
