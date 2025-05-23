@@ -14,6 +14,7 @@ from pathlib import Path
 from django.conf import settings
 import os
 import dj_database_url
+from decouple import config
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -83,7 +84,7 @@ WSGI_APPLICATION = 'FITTRACK.wsgi.application'
 
 DATABASE_URL= config('DATABASE_URL')
 DATABASES = {
-    'default': dj_database_url.parse(os.getenv('DATABASE_URL'))
+    'default': dj_database_url.parse(config('DATABASE_URL'))
 }
 
 
