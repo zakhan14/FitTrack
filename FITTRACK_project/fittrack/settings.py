@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-_m-lpnvylzh055aaq@@l)x(evcga6%n+@-(f5&tf-^z-^z@p_p'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -59,7 +59,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'FITTRACK.urls'
+ROOT_URLCONF = 'FITTRACK_project.urls'
 
 TEMPLATES = [
     {
@@ -76,7 +76,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'FITTRACK.wsgi.application'
+WSGI_APPLICATION = 'fittrack.wsgi.application'
 
 # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'FITTRACK.settings')
 # Database
