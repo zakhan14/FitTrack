@@ -59,7 +59,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'FITTRACK_project.urls'
+ROOT_URLCONF = 'FITTRACK.urls'
 
 TEMPLATES = [
     {
@@ -76,7 +76,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'fittrack.wsgi.application'
+WSGI_APPLICATION = 'FITTRACK.wsgi.application'
 
 # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'FITTRACK.settings')
 # Database
