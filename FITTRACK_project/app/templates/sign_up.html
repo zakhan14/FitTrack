@@ -7,7 +7,7 @@
     <title>FitTracker | Registro</title>
 
     <!-- Iconos y fuentes -->
-     <link rel="icon" href="{% static 'images/logo.png' %}">
+    <link rel="icon" href="{% static 'images/logo.png' %}">
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -23,43 +23,60 @@
 
   <body>
     <!-- ===== Header ===== -->
-    
 
     <!-- ===== Main auth container ===== -->
     <main class="auth-container">
-      <a href="{% url 'index' %}" ><img src="{% static 'images/logo.png' %}" class="logo" alt=""></a>
+      <a href="{% url 'index' %}">
+        <img src="{% static 'images/logo.png' %}" class="logo" alt="FitTracker logo" />
+      </a>
       <h2 class="auth-title">Crear cuenta</h2><br>
 
-      <form method="post" class="auth-form">
-        {% csrf_token %}
-
-        <!-- Renderizado manual de los campos para agregar clases -->
-        <div class="form-group">
-          {{ form.email.label_tag }}
-          {{ form.email }}
-          {{ form.email.errors }}
+      {% if form.errors %}
+        <div class="form-errors" style="color: red; margin-bottom: 1rem;">
+          <ul>
+            {% for field in form %}
+              {% for error in field.errors %}
+                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+              {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
         </div>
+      {% endif %}
 
-        <div class="form-group">
-          {{ form.username.label_tag }}
-          {{ form.username }}
-          {{ form.username.errors }}
-        </div>
+<form method="post" class="auth-form" novalidate>
+  {% csrf_token %}
 
-        <div class="form-group">
-          {{ form.password.label_tag }}
-          {{ form.password }}
-          {{ form.password.errors }}
-        </div>
+  <div class="form-group">
+    {{ form.nickname.label_tag }}
+    {{ form.nickname }}
+    {{ form.nickname.errors }}
+  </div>
 
-        <div class="form-group">
-          {{ form.confirm_password.label_tag }}
-          {{ form.confirm_password }}
-          {{ form.confirm_password.errors }}
-        </div>
+  <div class="form-group">
+    {{ form.email.label_tag }}
+    {{ form.email }}
+    {{ form.email.errors }}
+  </div>
 
-        <button type="submit" class="btn btn-main">Registrarse</button>
-      </form>
+  <div class="form-group">
+    {{ form.password.label_tag }}
+    {{ form.password }}
+    {{ form.password.errors }}
+  </div>
+
+  <div class="form-group">
+    {{ form.confirm_password.label_tag }}
+    {{ form.confirm_password }}
+    {{ form.confirm_password.errors }}
+  </div>
+
+  <button type="submit" class="btn btn-main">Registrarse</button>
+</form>
+
+
 
       <p class="auth-alt">
         ¿Ya tienes cuenta?
@@ -68,37 +85,37 @@
     </main>
 
     <!-- ===== Footer ===== -->
-      <footer class="footer">
-    <div class="footer-left">
-      <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo">
-      <div class="social-icons">
-        <a href="https://www.facebook.com/ZukaKhantadze" target="_blank" aria-label="Facebook">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="https://www.tiktok.com/@_zakhan_" target="_blank" aria-label="TikTok">
-          <i class="fab fa-tiktok"></i>
-        </a>
-        <a href="https://www.instagram.com/_zakhan_" target="_blank" aria-label="Instagram">
-          <i class="fab fa-instagram"></i>
-        </a>
+    <footer class="footer">
+      <div class="footer-left">
+        <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+        <div class="social-icons">
+          <a href="https://www.facebook.com/ZukaKhantadze" target="_blank" aria-label="Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://www.tiktok.com/@_zakhan_" target="_blank" aria-label="TikTok">
+            <i class="fab fa-tiktok"></i>
+          </a>
+          <a href="https://www.instagram.com/_zakhan_" target="_blank" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+        </div>
       </div>
-    </div>
       <div class="footer-columns">
-    <div class="footer-column">
-      <h4>Contacto</h4>
-      <p>contacto@fittracker.com</p>
-      <p>+34 012 456 789</p>
-    </div>
-    <div class="footer-column">
-      <h4>Dirección</h4>
-      <p>Calle Inexistente 13</p>
-      <p>Madrid, España</p>
-    </div>
-    <div class="footer-column">
-      <h4>Redes Sociales</h4>
-      <p>Síguenos en Facebook, <br>TikTok e Instagram.</p>
-    </div>
-  </div>
-  </footer>
+        <div class="footer-column">
+          <h4>Contacto</h4>
+          <p>contacto@fittracker.com</p>
+          <p>+34 012 456 789</p>
+        </div>
+        <div class="footer-column">
+          <h4>Dirección</h4>
+          <p>Calle Inexistente 13</p>
+          <p>Madrid, España</p>
+        </div>
+        <div class="footer-column">
+          <h4>Redes Sociales</h4>
+          <p>Síguenos en Facebook, <br />TikTok e Instagram.</p>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

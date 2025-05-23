@@ -1,13 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-# Puedes personalizar el usuario si quieres extender más tarde
 class User(AbstractUser):
     email = models.EmailField(unique=True)
     nickname = models.CharField(max_length=50)
     register_date = models.DateTimeField(auto_now_add=True)
 
-    def _str_(self):
+    def __str__(self):
         return self.nickname or self.username
 
 class BodyData(models.Model):
@@ -22,7 +21,7 @@ class BodyData(models.Model):
     class Meta:
         ordering = ['-mesures_update']
 
-    def _str_(self):
+    def __str__(self):
         return f"Medidas de {self.user.nickname} - {self.mesures_update}"
 
 class Training(models.Model):
@@ -41,5 +40,5 @@ class Training(models.Model):
     class Meta:
         ordering = ['-training_date']
 
-    def _str_(self):
+    def __str__(self):
         return f"{self.get_tipo_entrenamiento_display()} - {self.training_date}"

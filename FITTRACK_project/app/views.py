@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.utils.http import url_has_allowed_host_and_scheme
-from django.conf import settings
 
 from .forms import SignUpForm, CustomLoginForm
 
+User = get_user_model()
 
 def index(request):
     return render(request, 'index.html')
@@ -19,6 +19,7 @@ def sign_up(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
+            user.nickname = user.nickname or user.username  # asegurar que nickname esté asignado
             user.save()
             login(request, user)
             return redirect('index')
@@ -28,7 +29,7 @@ def sign_up(request):
 
 
 def log_in(request):
-    next_url = request.GET.get('next', 'index')  # Redirección por defecto
+    next_url = request.GET.get('next', 'index')
 
     if request.method == 'POST':
         form = CustomLoginForm(request, data=request.POST)
@@ -36,7 +37,6 @@ def log_in(request):
             user = form.get_user()
             login(request, user)
 
-            # Validar que la URL sea segura
             redirect_to = request.POST.get('next', next_url)
             if url_has_allowed_host_and_scheme(redirect_to, allowed_hosts={request.get_host()}):
                 return redirect(redirect_to)
@@ -45,10 +45,7 @@ def log_in(request):
     else:
         form = CustomLoginForm()
 
-    return render(request, 'log_in.html', {
-        'form': form,
-        'next': next_url,
-    })
+    return render(request, 'log_in.html', {'form': form, 'next': next_url})
 
 
 @login_required(login_url='log_in')
@@ -70,7 +67,14 @@ def entrenamiento(request):
         tipo = request.POST.get('tipo')
         descripcion = request.POST.get('descripcion')
 
-        # Aquí guardarías los datos en la base de datos
+        # Aquí guardará los datos en la base de datos
+        # Por ejemplo:
+        # Training.objects.create(
+        #     user=request.user,
+        #     training_date=fecha,
+        #     tipo_entrenamiento=tipo,
+        #     comment=descripcion
+        # )
 
         return redirect('entrenamiento')
 
