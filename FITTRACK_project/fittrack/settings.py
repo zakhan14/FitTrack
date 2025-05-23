@@ -59,7 +59,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'FITTRACK_project.urls'
+ROOT_URLCONF = 'fittrack.urls'
 
 TEMPLATES = [
     {
