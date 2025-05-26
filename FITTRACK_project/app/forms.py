@@ -34,5 +34,6 @@ class SignUpForm(forms.ModelForm):
         return user
 
 
-class CustomLoginForm(AuthenticationForm):
-    username = forms.EmailField(label="Correo electrónico", widget=forms.EmailInput(attrs={"autofocus": True}))
+class CustomLoginForm(forms.Form):
+    email = forms.EmailField(label="Correo electrónico")
+    password = forms.CharField(widget=forms.PasswordInput, label="Contraseña")
