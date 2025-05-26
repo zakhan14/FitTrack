@@ -15,7 +15,9 @@
 <body>
 
   <main class="auth-container">
-  <a href="{% url 'index' %}" ><img src="{% static 'images/logo.png' %}" class="logo" alt=""></a>
+    <a href="{% url 'index' %}">
+      <img src="{% static 'images/logo.png' %}" class="logo" alt="FitTracker Logo">
+    </a>
     <h2>Iniciar sesión</h2>
     <form method="post" action="{% url 'log_in' %}">
       {% csrf_token %}
@@ -34,13 +36,14 @@
           <div class="error">{{ form.password.errors }}</div>
         {% endif %}
       </div>
-        
+      
+      <!-- Campo oculto para mantener la URL next -->
       <input type="hidden" name="next" value="{{ next }}">
 
       <button type="submit" class="btn">Entrar</button>
-        <p class="auth-alt">
+      <p class="auth-alt">
         ¿Todavía no tienes cuenta?
-        <a href="{% url 'sign_up' %}" class="btn">Registrate</a>
+        <a href="{% url 'sign_up' %}" class="btn">Regístrate</a>
       </p>
     </form>
   </main>
@@ -77,5 +80,6 @@
       </div>
     </div>
   </footer>
+
 </body>
 </html>

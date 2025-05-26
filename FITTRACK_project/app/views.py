@@ -4,6 +4,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.utils.http import url_has_allowed_host_and_scheme
+from django.urls import reverse
 
 from .forms import SignUpForm, CustomLoginForm
 
@@ -31,9 +32,8 @@ def sign_up(request):
     return render(request, 'sign_up.html', {'form': form})
 
 
-
 def log_in(request):
-    next_url = request.GET.get('next', 'index')  # por si accedió a una página protegida
+    next_url = request.GET.get('next', reverse('index'))  # obtener URL real
 
     if request.method == 'POST':
         form = CustomLoginForm(request, data=request.POST)
@@ -45,7 +45,7 @@ def log_in(request):
             if url_has_allowed_host_and_scheme(redirect_to, allowed_hosts={request.get_host()}):
                 return redirect(redirect_to)
             else:
-                return redirect('index')
+                return redirect(reverse('index'))
     else:
         form = CustomLoginForm()
 
