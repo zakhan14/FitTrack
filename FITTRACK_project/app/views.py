@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model, authenticate
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.urls import reverse
+from .forms import BodyDataForm
+
 
 from .forms import SignUpForm, CustomLoginForm
 
@@ -65,7 +67,23 @@ def detalle(request):
 
 @login_required(login_url='log_in')
 def progreso(request):
-    return render(request, 'progreso.html')
+    if request.method == 'POST':
+        form = BodyDataForm(request.POST)
+        if form.is_valid():
+            bodydata = form.save(commit=False)
+            bodydata.user = request.user
+            bodydata.save()
+            return redirect('progreso')  # Redirige para evitar doble envío
+    else:
+        form = BodyDataForm()
+
+    # Traemos los últimos 2 registros para comparar (puedes ajustar a los que quieras)
+    bodydata_list = request.user.body_data.all()[:2]
+
+    return render(request, 'progreso.html', {
+        'form': form,
+        'bodydata_list': bodydata_list,
+    })
 
 @login_required(login_url='log_in')
 @csrf_protect

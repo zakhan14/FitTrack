@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import get_user_model
+from .models import BodyData
 
 User = get_user_model()
 
@@ -37,3 +38,8 @@ class SignUpForm(forms.ModelForm):
 class CustomLoginForm(forms.Form):
     email = forms.EmailField(label="Correo electrónico")
     password = forms.CharField(widget=forms.PasswordInput, label="Contraseña")
+
+class BodyDataForm(forms.ModelForm):
+    class Meta:
+        model = BodyData
+        fields = ['weight', 'height', 'grasa_corporal', 'masa_muscular', 'liquido_corporal', 'mesures_update']
