@@ -43,6 +43,8 @@
     // Obtener datos del contexto Django
     // Parseamos el JSON del elemento con id 'chart-data'
 let chartDataRaw = JSON.parse(document.getElementById('chart-data').textContent);
+console.log('Datos recibidos para el radar:', chartData);
+
 
 // Si chartDataRaw no es un array, lo convertimos en array con un solo elemento
 const chartData = Array.isArray(chartDataRaw) ? chartDataRaw : [chartDataRaw];
