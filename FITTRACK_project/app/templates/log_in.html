@@ -34,6 +34,8 @@
           <div class="error">{{ form.password.errors }}</div>
         {% endif %}
       </div>
+        
+      <input type="hidden" name="next" value="{{ next }}">
 
       <button type="submit" class="btn">Entrar</button>
         <p class="auth-alt">

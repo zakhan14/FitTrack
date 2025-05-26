@@ -9,6 +9,7 @@ from .forms import SignUpForm, CustomLoginForm
 
 User = get_user_model()
 
+
 def index(request):
     return render(request, 'index.html')
 
@@ -19,17 +20,18 @@ def sign_up(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
-            user.nickname = user.nickname or user.username  # asegurar que nickname esté asignado
+            user.nickname = user.nickname or user.username  # asegurar nickname
             user.save()
             login(request, user)
             return redirect('index')
     else:
         form = SignUpForm()
+
     return render(request, 'sign_up.html', {'form': form})
 
 
 def log_in(request):
-    next_url = request.GET.get('next', 'index')
+    next_url = request.GET.get('next', 'index')  # por si accedió a una página protegida
 
     if request.method == 'POST':
         form = CustomLoginForm(request, data=request.POST)
@@ -68,7 +70,6 @@ def entrenamiento(request):
         descripcion = request.POST.get('descripcion')
 
         # Aquí guardará los datos en la base de datos
-        # Por ejemplo:
         # Training.objects.create(
         #     user=request.user,
         #     training_date=fecha,
