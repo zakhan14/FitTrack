@@ -1,50 +1,38 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
-from django.core.exceptions import ValidationError
-from .models import User  # Importa tu modelo personalizado
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class SignUpForm(forms.ModelForm):
-    password = forms.CharField(
-        widget=forms.PasswordInput,
-        label='Contraseña'
-    )
-    confirm_password = forms.CharField(
-        widget=forms.PasswordInput,
-        label='Confirmar contraseña'
-    )
+    password = forms.CharField(label="Contraseña", widget=forms.PasswordInput, strip=False)
+    confirm_password = forms.CharField(label="Confirmar contraseña", widget=forms.PasswordInput, strip=False)
 
     class Meta:
         model = User
-        fields = ['nickname', 'email', 'password']
-        labels = {
-            'nickname': 'Nickname',
-            'email': 'Correo electrónico',
-        }
+        fields = ('nickname', 'email')
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Este email ya está registrado.")
+        return email
 
     def clean(self):
         cleaned_data = super().clean()
-        password = cleaned_data.get('password')
-        confirm_password = cleaned_data.get('confirm_password')
-
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
         if password and confirm_password and password != confirm_password:
-            raise ValidationError("Las contraseñas no coinciden.")
-
+            self.add_error('confirm_password', "Las contraseñas no coinciden.")
         return cleaned_data
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.username = user.nickname  # Usamos el nickname como username
-        user.set_password(self.cleaned_data['password'])  # Encripta la contraseña
+        user.set_password(self.cleaned_data["password"])
         if commit:
             user.save()
         return user
 
+
 class CustomLoginForm(AuthenticationForm):
-    username = forms.CharField(
-        label='Nickname',
-        widget=forms.TextInput(attrs={'autocomplete': 'username'})
-    )
-    password = forms.CharField(
-        label='Contraseña',
-        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password'})
-    )
+    username = forms.EmailField(label="Correo electrónico", widget=forms.EmailInput(attrs={"autofocus": True}))

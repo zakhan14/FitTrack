@@ -106,6 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # Aquí añadimos esta línea para indicar el modelo de usuario personalizado
 AUTH_USER_MODEL = 'app.User'
 

@@ -18,16 +18,18 @@ def sign_up(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
-            user.nickname = user.nickname or user.username  # asegurar nickname
-            user.save()
+            user = form.save()  # ya incluye set_password
+            # si quieres asegurar nickname:
+            if not user.nickname:
+                user.nickname = user.email.split('@')[0]
+                user.save()
             login(request, user)
             return redirect('index')
     else:
         form = SignUpForm()
 
     return render(request, 'sign_up.html', {'form': form})
+
 
 
 def log_in(request):
