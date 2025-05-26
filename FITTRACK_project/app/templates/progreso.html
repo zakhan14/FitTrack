@@ -34,7 +34,7 @@
       <button type="submit" name="comparar">Comparar</button>
     </form>
 
-    <!-- Datos JSON en scripts -->
+    <!-- Scripts JSON generados correctamente -->
     {{ data_radar|json_script:"data-radar" }}
     {{ indicator|json_script:"indicator-data" }}
     {{ labels|json_script:"labels-data" }}
@@ -68,10 +68,10 @@
       series: [{
         name: 'Mediciones',
         type: 'radar',
-        data: dataRadar.map((val, idx) => ({
+        data: Array.isArray(dataRadar) ? dataRadar.map((val, idx) => ({
           value: val,
           name: labelsData[idx] || `Serie ${idx + 1}`
-        }))
+        })) : []
       }]
     };
 
