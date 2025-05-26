@@ -16,7 +16,7 @@ class BodyData(models.Model):
     grasa_corporal = models.FloatField()
     liquido_corporal = models.FloatField()
     masa_muscular = models.FloatField()
-    mesures_update = models.DateField()
+    mesures_update = models.DateTimeField()
 
     class Meta:
         ordering = ['-mesures_update']

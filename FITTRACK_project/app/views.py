@@ -6,7 +6,8 @@ from django.contrib.auth import get_user_model, authenticate
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.urls import reverse
 from .forms import BodyDataForm
-
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 
 from .forms import SignUpForm, CustomLoginForm
 
@@ -39,7 +40,6 @@ def log_in(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
 
-            # Autenticación manual por email
             try:
                 user = User.objects.get(email=email)
                 user = authenticate(request, username=user.username, password=password)
@@ -67,22 +67,89 @@ def detalle(request):
 
 @login_required(login_url='log_in')
 def progreso(request):
-    if request.method == 'POST':
-        form = BodyDataForm(request.POST)
-        if form.is_valid():
-            bodydata = form.save(commit=False)
-            bodydata.user = request.user
-            bodydata.save()
-            return redirect('progreso')  # Redirige para evitar doble envío
-    else:
-        form = BodyDataForm()
+    form = BodyDataForm(request.POST or None)
+    last_measurement = request.user.body_data.order_by('-mesures_update').first()
+    chart_data = []
 
-    # Traemos los últimos 2 registros para comparar (puedes ajustar a los que quieras)
-    bodydata_list = request.user.body_data.all()[:2]
+    if request.method == 'POST':
+        if 'guardar' in request.POST:
+            # Guardar nueva medición y luego mostrar gráfico con esa medición guardada
+            if form.is_valid():
+                bodydata = form.save(commit=False)
+                bodydata.user = request.user
+                bodydata.save()
+                # Recargar la última medición tras guardar
+                last_measurement = bodydata
+                chart_data = [{
+                    'height': last_measurement.height,
+                    'weight': last_measurement.weight,
+                    'grasa_corporal': last_measurement.grasa_corporal,
+                    'masa_muscular': last_measurement.masa_muscular,
+                    'liquido_corporal': last_measurement.liquido_corporal,
+                    'fecha': last_measurement.mesures_update.strftime('%Y-%m-%d'),
+                }]
+                return render(request, 'progreso.html', {
+                    'form': BodyDataForm(),  # formulario limpio tras guardar
+                    'chart_data': json.dumps(chart_data, cls=DjangoJSONEncoder),
+                })
+
+        elif 'comparar' in request.POST:
+            # No guardamos, tomamos datos del formulario + última medición guardada y comparamos
+            if form.is_valid():
+                form_data = form.cleaned_data
+                if last_measurement:
+                    chart_data = [
+                        {
+                            'height': last_measurement.height,
+                            'weight': last_measurement.weight,
+                            'grasa_corporal': last_measurement.grasa_corporal,
+                            'masa_muscular': last_measurement.masa_muscular,
+                            'liquido_corporal': last_measurement.liquido_corporal,
+                            'fecha': last_measurement.mesures_update.strftime('%Y-%m-%d'),
+                        },
+                        {
+                            'height': form_data['height'],
+                            'weight': form_data['weight'],
+                            'grasa_corporal': form_data['grasa_corporal'],
+                            'masa_muscular': form_data['masa_muscular'],
+                            'liquido_corporal': form_data['liquido_corporal'],
+                            'fecha': 'Formulario (sin guardar)',
+                        }
+                    ]
+                else:
+                    # No hay última medición guardada, solo mostramos formulario
+                    chart_data = [
+                        {
+                            'height': form_data['height'],
+                            'weight': form_data['weight'],
+                            'grasa_corporal': form_data['grasa_corporal'],
+                            'masa_muscular': form_data['masa_muscular'],
+                            'liquido_corporal': form_data['liquido_corporal'],
+                            'fecha': 'Formulario (sin guardar)',
+                        }
+                    ]
+
+                return render(request, 'progreso.html', {
+                    'form': form,
+                    'chart_data': json.dumps(chart_data, cls=DjangoJSONEncoder),
+                })
+
+    # GET o cualquier otro caso: mostramos solo la última medición
+    if last_measurement:
+        chart_data = [{
+            'height': last_measurement.height,
+            'weight': last_measurement.weight,
+            'grasa_corporal': last_measurement.grasa_corporal,
+            'masa_muscular': last_measurement.masa_muscular,
+            'liquido_corporal': last_measurement.liquido_corporal,
+            'fecha': last_measurement.mesures_update.strftime('%Y-%m-%d'),
+        }]
+    else:
+        chart_data = []
 
     return render(request, 'progreso.html', {
         'form': form,
-        'bodydata_list': bodydata_list,
+        'chart_data': json.dumps(chart_data, cls=DjangoJSONEncoder),
     })
 
 @login_required(login_url='log_in')

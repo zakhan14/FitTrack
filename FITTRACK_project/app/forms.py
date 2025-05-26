@@ -42,4 +42,19 @@ class CustomLoginForm(forms.Form):
 class BodyDataForm(forms.ModelForm):
     class Meta:
         model = BodyData
-        fields = ['weight', 'height', 'grasa_corporal', 'masa_muscular', 'liquido_corporal', 'mesures_update']
+        fields = ['height', 'weight', 'grasa_corporal', 'masa_muscular', 'liquido_corporal', 'mesures_update']
+        labels = {
+            'height': 'Altura (cm)',
+            'weight': 'Peso (kg)',
+            'grasa_corporal': 'Grasa Corporal (%)',
+            'masa_muscular': 'Masa Muscular (%)',
+            'liquido_corporal': 'Líquido Corporal (%)',
+            'mesures_update': 'Fecha de medición',
+        }
+        widgets = {
+            'mesures_update': forms.DateInput(attrs={
+            'type': 'date',
+            'placeholder': 'YYYY-MM-DD'  # Ejemplo de formato ISO
+         }),
+        }
+

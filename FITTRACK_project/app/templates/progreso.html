@@ -24,17 +24,62 @@
       <a href="{% url 'index' %}" class="btn">Log Out</a>
     </div>
   </header>
-<h2 style="text-align: left; margin-left: 26%;">Introduce tus valores</h2>
-<div id="contenedor-formulario-grafico">
-  <form method="post" id="calcForm">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Guardar y generar gráfico</button>
-  </form>
-</div>
 
+  <h2 style="text-align: left; margin-left: 26%;">Introduce tus valores</h2>
+  <div id="contenedor-formulario-grafico">
+    <form method="post" id="calcForm">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" name="guardar">Guardar nueva medición</button>
+      <button type="submit" name="comparar">Comparar</button>
+    </form>
+    {{ chart_data|json_script:"chart-data" }}
+  </div>
 
-  <script src="{% static 'js/progress.js' %}"></script>
+  <div id="main" style="width: 100%; max-width: 600px; height: 400px; margin: auto;"></div>
+
+ <script>
+  const chartData = JSON.parse(document.getElementById('chart-data').textContent);
+
+  if (chartData.length > 0) {
+    const labels = ['Altura (cm)', 'Peso (kg)', 'Grasa (%)', 'Músculo (%)', 'Líquidos (%)'];
+
+    const radarValues = chartData.map(entry => [
+      entry.height,
+      entry.weight,
+      entry.grasa_corporal,
+      entry.masa_muscular,
+      entry.liquido_corporal
+    ]);
+
+    const seriesData = radarValues.map((val, idx) => ({
+      value: val,
+      name: chartData[idx].fecha
+    }));
+
+    const option = {
+      title: {
+        text: 'Comparación corporal',
+        left: 'center'
+      },
+      tooltip: {},
+      radar: {
+        indicator: labels.map(label => ({ name: label, max: 200 })),
+        shape: 'circle'
+      },
+      series: [{
+        type: 'radar',
+        data: seriesData
+      }]
+    };
+
+    const myChart = echarts.init(document.getElementById('main'));
+    myChart.setOption(option);
+  } else {
+    document.getElementById('main').innerHTML = '<p style="text-align:center;">No hay mediciones para mostrar.</p>';
+  }
+</script>
+
 
   <footer class="footer">
     <div class="footer-left">
