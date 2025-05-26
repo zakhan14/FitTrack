@@ -34,13 +34,11 @@
       <button type="submit" name="comparar">Comparar</button>
     </form>
 
-    <!-- Scripts JSON generados correctamente -->
     {{ data_radar|json_script:"data-radar" }}
     {{ indicator|json_script:"indicator-data" }}
     {{ labels|json_script:"labels-data" }}
   </div>
 
-  <!-- Contenedor para el gráfico -->
   <div id="radarChart" style="width: 100%; max-width: 600px; height: 400px; margin: auto;"></div>
 
   <script>
@@ -52,30 +50,35 @@
     console.log("Indicadores:", indicatorData);
     console.log("Etiquetas:", labelsData);
 
-    const chart = echarts.init(document.getElementById('radarChart'));
+    if (dataRadar.length > 0 && indicatorData.length > 0 && labelsData.length > 0) {
+      const chart = echarts.init(document.getElementById('radarChart'));
 
-    const option = {
-      title: {
-        text: 'Comparativa Corporal'
-      },
-      tooltip: {},
-      legend: {
-        data: labelsData
-      },
-      radar: {
-        indicator: indicatorData
-      },
-      series: [{
-        name: 'Mediciones',
-        type: 'radar',
-        data: Array.isArray(dataRadar) ? dataRadar.map((val, idx) => ({
-          value: val,
-          name: labelsData[idx] || `Serie ${idx + 1}`
-        })) : []
-      }]
-    };
+      const option = {
+        title: {
+          text: 'Comparativa Corporal'
+        },
+        tooltip: {},
+        legend: {
+          data: labelsData
+        },
+        radar: {
+          indicator: indicatorData
+        },
+        series: [{
+          name: 'Mediciones',
+          type: 'radar',
+          data: dataRadar.map((val, idx) => ({
+            value: val,
+            name: labelsData[idx] || `Serie ${idx + 1}`
+          }))
+        }]
+      };
 
-    chart.setOption(option);
+      chart.setOption(option);
+    } else {
+      document.getElementById('radarChart').innerHTML = '<p style="text-align:center; margin-top:2rem; color:gray;">No hay datos suficientes para mostrar el gráfico radar.</p>';
+      console.log("No hay datos suficientes para mostrar el gráfico radar.");
+    }
   </script>
 </body>
 </html>

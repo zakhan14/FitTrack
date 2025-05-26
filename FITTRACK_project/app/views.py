@@ -78,7 +78,7 @@ def progreso(request):
         {'name': 'Líquido corporal', 'max': 70},
     ]
 
-    # Manejo de POST
+    # Si es POST y guardar
     if request.method == 'POST':
         if 'guardar' in request.POST and form.is_valid():
             bodydata = form.save(commit=False)
@@ -90,7 +90,7 @@ def progreso(request):
             form_data = form.cleaned_data
             dataRadar = []
 
-            # Añadir medición guardada si existe
+            # Añadir medición guardada si existe, si no, añadir ceros para comparación visual
             if last_measurement:
                 dataRadar.append([
                     last_measurement.height,
@@ -101,7 +101,8 @@ def progreso(request):
                 ])
                 label_1 = "Guardado"
             else:
-                label_1 = "No hay medición previa"
+                dataRadar.append([0, 0, 0, 0, 0])
+                label_1 = "Sin medición previa"
 
             # Añadir datos del formulario (no guardados)
             dataRadar.append([
@@ -121,25 +122,12 @@ def progreso(request):
                 'labels': json.dumps(labels, cls=DjangoJSONEncoder),
             })
 
-    # Si es GET o se ha guardado una medición
-    dataRadar = []
-    labels = []
-
-    if last_measurement:
-        dataRadar = [[
-            last_measurement.height,
-            last_measurement.weight,
-            last_measurement.grasa_corporal,
-            last_measurement.masa_muscular,
-            last_measurement.liquido_corporal
-        ]]
-        labels = ['Última medición']
-
+    # Si no es POST o no es guardar ni comparar, mostrar solo el formulario sin datos radar
     return render(request, 'progreso.html', {
         'form': form,
-        'data_radar': json.dumps(dataRadar, cls=DjangoJSONEncoder),
+        'data_radar': json.dumps([], cls=DjangoJSONEncoder),
         'indicator': json.dumps(indicator, cls=DjangoJSONEncoder),
-        'labels': json.dumps(labels, cls=DjangoJSONEncoder),
+        'labels': json.dumps([], cls=DjangoJSONEncoder),
     })
 
 @login_required(login_url='log_in')
