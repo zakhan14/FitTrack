@@ -33,128 +33,49 @@
       <button type="submit" name="guardar">Guardar nueva medición</button>
       <button type="submit" name="comparar">Comparar</button>
     </form>
-    {{ chart_data|json_script:"chart-data" }}
+
+    <!-- Datos JSON en scripts -->
+    {{ data_radar|json_script:"data-radar" }}
+    {{ indicator|json_script:"indicator-data" }}
+    {{ labels|json_script:"labels-data" }}
   </div>
 
   <!-- Contenedor para el gráfico -->
   <div id="radarChart" style="width: 100%; max-width: 600px; height: 400px; margin: auto;"></div>
 
   <script>
-    // Obtener datos del contexto Django
-    // Parseamos el JSON del elemento con id 'chart-data'
-let chartDataRaw = JSON.parse(document.getElementById('chart-data').textContent);
+    const dataRadar = JSON.parse(document.getElementById('data-radar').textContent);
+    const indicatorData = JSON.parse(document.getElementById('indicator-data').textContent);
+    const labelsData = JSON.parse(document.getElementById('labels-data').textContent);
 
+    console.log("Datos recibidos para el radar:", dataRadar);
+    console.log("Indicadores:", indicatorData);
+    console.log("Etiquetas:", labelsData);
 
-// Si chartDataRaw no es un array, lo convertimos en array con un solo elemento
-const chartData = Array.isArray(chartDataRaw) ? chartDataRaw : [chartDataRaw];
-console.log('Datos recibidos para el radar:', chartData);
+    const chart = echarts.init(document.getElementById('radarChart'));
 
-// Definimos los indicadores del radar
-const indicators = [
-  { name: 'Altura', max: 250 },
-  { name: 'Peso', max: 200 },
-  { name: 'Grasa Corporal', max: 50 },
-  { name: 'Masa Muscular', max: 100 },
-  { name: 'Líquido Corporal', max: 70 }
-];
+    const option = {
+      title: {
+        text: 'Comparativa Corporal'
+      },
+      tooltip: {},
+      legend: {
+        data: labelsData
+      },
+      radar: {
+        indicator: indicatorData
+      },
+      series: [{
+        name: 'Mediciones',
+        type: 'radar',
+        data: dataRadar.map((val, idx) => ({
+          value: val,
+          name: labelsData[idx] || `Serie ${idx + 1}`
+        }))
+      }]
+    };
 
-// Creamos los datos para el radar a partir de chartData
-const dataRadar = chartData.map(entry => [
-  entry.height || 0,
-  entry.weight || 0,
-  entry.grasa_corporal || 0,
-  entry.masa_muscular || 0,
-  entry.liquido_corporal || 0
-]);
-
-// Creamos las etiquetas para la leyenda, usando las fechas
-const labels = chartData.map(entry => entry.fecha || 'Sin fecha');
-
-// Configuración del gráfico radar
-const option = {
-  backgroundColor: '#161627',
-  title: {
-    text: 'Progreso corporal',
-    left: 'center',
-    textStyle: { color: '#eee' }
-  },
-  legend: {
-    bottom: 5,
-    data: labels,
-    textStyle: { color: '#fff', fontSize: 14 }
-  },
-  radar: {
-    indicator: indicators,
-    shape: 'circle',
-    splitNumber: 5,
-    axisName: { color: 'rgb(238, 197, 102)' },
-    splitLine: {
-      lineStyle: {
-        color: [
-          'rgba(238, 197, 102, 0.1)',
-          'rgba(238, 197, 102, 0.2)',
-          'rgba(238, 197, 102, 0.4)',
-          'rgba(238, 197, 102, 0.6)',
-          'rgba(238, 197, 102, 0.8)',
-          'rgba(238, 197, 102, 1)'
-        ].reverse()
-      }
-    },
-    splitArea: { show: false },
-    axisLine: {
-      lineStyle: { color: 'rgba(238, 197, 102, 0.5)' }
-    }
-  },
-  series: dataRadar.map((data, idx) => ({
-    name: labels[idx],
-    type: 'radar',
-    data: [data],
-    areaStyle: { opacity: 0.5 },
-    lineStyle: { width: 1, opacity: 0.5 },
-    symbol: 'none',
-    itemStyle: {
-      color: idx === 0 ? '#B3E4A1' : 'rgb(238, 197, 102)'
-    }
-  }))
-};
-
-// Inicializamos el gráfico en el div con id 'radarChart'
-const myChart = echarts.init(document.getElementById('radarChart'));
-myChart.setOption(option);
-
+    chart.setOption(option);
   </script>
-
-  <footer class="footer">
-    <div class="footer-left">
-      <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo">
-      <div class="social-icons">
-        <a href="https://www.facebook.com/ZukaKhantadze" target="_blank" aria-label="Facebook">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="https://www.tiktok.com/@_zakhan_" target="_blank" aria-label="TikTok">
-          <i class="fab fa-tiktok"></i>
-        </a>
-        <a href="https://www.instagram.com/_zakhan_" target="_blank" aria-label="Instagram">
-          <i class="fab fa-instagram"></i>
-        </a>
-      </div>
-    </div>
-    <div class="footer-columns">
-      <div class="footer-column">
-        <h4>Contacto</h4>
-        <p>contacto@fittracker.com</p>
-        <p>+34 012 456 789</p>
-      </div>
-      <div class="footer-column">
-        <h4>Dirección</h4>
-        <p>Calle Inexistente 13</p>
-        <p>Madrid, España</p>
-      </div>
-      <div class="footer-column">
-        <h4>Redes Sociales</h4>
-        <p>Síguenos en Facebook, <br>TikTok e Instagram.</p>
-      </div>
-    </div>
-  </footer>
 </body>
 </html>

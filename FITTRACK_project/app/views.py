@@ -5,11 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model, authenticate
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.urls import reverse
-from .forms import BodyDataForm
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 
-from .forms import SignUpForm, CustomLoginForm
+from .forms import SignUpForm, CustomLoginForm, BodyDataForm
 
 User = get_user_model()
 
@@ -69,7 +68,8 @@ def detalle(request):
 def progreso(request):
     form = BodyDataForm(request.POST or None)
     last_measurement = request.user.body_data.order_by('-mesures_update').first()
-    dataRadar = []
+
+    # Indicadores para el radar
     indicator = [
         {'name': 'Altura', 'max': 220},
         {'name': 'Peso', 'max': 120},
@@ -78,6 +78,7 @@ def progreso(request):
         {'name': 'Líquido corporal', 'max': 70},
     ]
 
+    # Manejo de POST
     if request.method == 'POST':
         if 'guardar' in request.POST and form.is_valid():
             bodydata = form.save(commit=False)
@@ -87,41 +88,43 @@ def progreso(request):
 
         elif 'comparar' in request.POST and form.is_valid():
             form_data = form.cleaned_data
-            # Datos para comparar
+            dataRadar = []
+
+            # Añadir medición guardada si existe
             if last_measurement:
-                dataRadar = [
-                    [
-                        last_measurement.height,
-                        last_measurement.weight,
-                        last_measurement.grasa_corporal,
-                        last_measurement.masa_muscular,
-                        last_measurement.liquido_corporal
-                    ],
-                    [
-                        form_data['height'],
-                        form_data['weight'],
-                        form_data['grasa_corporal'],
-                        form_data['masa_muscular'],
-                        form_data['liquido_corporal']
-                    ]
-                ]
+                dataRadar.append([
+                    last_measurement.height,
+                    last_measurement.weight,
+                    last_measurement.grasa_corporal,
+                    last_measurement.masa_muscular,
+                    last_measurement.liquido_corporal
+                ])
+                label_1 = "Guardado"
             else:
-                dataRadar = [[
-                    form_data['height'],
-                    form_data['weight'],
-                    form_data['grasa_corporal'],
-                    form_data['masa_muscular'],
-                    form_data['liquido_corporal']
-                ]]
+                label_1 = "No hay medición previa"
+
+            # Añadir datos del formulario (no guardados)
+            dataRadar.append([
+                form_data['height'],
+                form_data['weight'],
+                form_data['grasa_corporal'],
+                form_data['masa_muscular'],
+                form_data['liquido_corporal']
+            ])
+
+            labels = [label_1, "Formulario (sin guardar)"]
 
             return render(request, 'progreso.html', {
                 'form': form,
                 'data_radar': json.dumps(dataRadar, cls=DjangoJSONEncoder),
                 'indicator': json.dumps(indicator, cls=DjangoJSONEncoder),
-                'labels': json.dumps(['Guardado', 'Formulario (sin guardar)']),
+                'labels': json.dumps(labels, cls=DjangoJSONEncoder),
             })
 
-    # GET o tras guardar: mostrar solo último registro
+    # Si es GET o se ha guardado una medición
+    dataRadar = []
+    labels = []
+
     if last_measurement:
         dataRadar = [[
             last_measurement.height,
@@ -130,12 +133,13 @@ def progreso(request):
             last_measurement.masa_muscular,
             last_measurement.liquido_corporal
         ]]
+        labels = ['Última medición']
 
     return render(request, 'progreso.html', {
         'form': form,
         'data_radar': json.dumps(dataRadar, cls=DjangoJSONEncoder),
         'indicator': json.dumps(indicator, cls=DjangoJSONEncoder),
-        'labels': json.dumps(['Última medición']),
+        'labels': json.dumps(labels, cls=DjangoJSONEncoder),
     })
 
 @login_required(login_url='log_in')
