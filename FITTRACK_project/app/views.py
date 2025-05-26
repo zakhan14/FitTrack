@@ -69,7 +69,6 @@ def progreso(request):
     form = BodyDataForm(request.POST or None)
     last_measurement = request.user.body_data.order_by('-mesures_update').first()
 
-    # Indicadores para el radar
     indicator = [
         {'name': 'Altura', 'max': 220},
         {'name': 'Peso', 'max': 120},
@@ -78,7 +77,6 @@ def progreso(request):
         {'name': 'Líquido corporal', 'max': 70},
     ]
 
-    # Si es POST y guardar
     if request.method == 'POST':
         if 'guardar' in request.POST and form.is_valid():
             bodydata = form.save(commit=False)
@@ -86,11 +84,13 @@ def progreso(request):
             bodydata.save()
             last_measurement = bodydata
 
+            # En este caso solo guardamos, sin comparación visual
+            return redirect('progreso')
+
         elif 'comparar' in request.POST and form.is_valid():
             form_data = form.cleaned_data
             dataRadar = []
 
-            # Añadir medición guardada si existe, si no, añadir ceros para comparación visual
             if last_measurement:
                 dataRadar.append([
                     last_measurement.height,
@@ -101,10 +101,8 @@ def progreso(request):
                 ])
                 label_1 = "Guardado"
             else:
-                dataRadar.append([0, 0, 0, 0, 0])
-                label_1 = "Sin medición previa"
+                label_1 = "No hay medición previa"
 
-            # Añadir datos del formulario (no guardados)
             dataRadar.append([
                 form_data['height'],
                 form_data['weight'],
@@ -122,7 +120,7 @@ def progreso(request):
                 'labels': json.dumps(labels, cls=DjangoJSONEncoder),
             })
 
-    # Si no es POST o no es guardar ni comparar, mostrar solo el formulario sin datos radar
+    # GET o POST sin guardar ni comparar: solo formulario vacío y sin datos radar
     return render(request, 'progreso.html', {
         'form': form,
         'data_radar': json.dumps([], cls=DjangoJSONEncoder),
