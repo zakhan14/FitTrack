@@ -41,79 +41,85 @@
 
   <script>
     // Obtener datos del contexto Django
-    const chartData = JSON.parse(document.getElementById('chart-data').textContent);
+    // Parseamos el JSON del elemento con id 'chart-data'
+let chartDataRaw = JSON.parse(document.getElementById('chart-data').textContent);
 
-    // Construimos indicadores y datos para el radar
-    const indicators = [
-      { name: 'Altura', max: 250 },
-      { name: 'Peso', max: 200 },
-      { name: 'Grasa Corporal', max: 50 },
-      { name: 'Masa Muscular', max: 100 },
-      { name: 'Líquido Corporal', max: 70 }
-    ];
+// Si chartDataRaw no es un array, lo convertimos en array con un solo elemento
+const chartData = Array.isArray(chartDataRaw) ? chartDataRaw : [chartDataRaw];
 
-    // Mapear chartData para formato radar
-    // En chartData vienen uno o dos objetos con las medidas para comparar
-    const dataRadar = chartData.map(entry => [
-      entry.height || 0,
-      entry.weight || 0,
-      entry.grasa_corporal || 0,
-      entry.masa_muscular || 0,
-      entry.liquido_corporal || 0
-    ]);
+// Definimos los indicadores del radar
+const indicators = [
+  { name: 'Altura', max: 250 },
+  { name: 'Peso', max: 200 },
+  { name: 'Grasa Corporal', max: 50 },
+  { name: 'Masa Muscular', max: 100 },
+  { name: 'Líquido Corporal', max: 70 }
+];
 
-    // Etiquetas para la leyenda: fechas o 'Formulario (sin guardar)'
-    const labels = chartData.map(entry => entry.fecha);
+// Creamos los datos para el radar a partir de chartData
+const dataRadar = chartData.map(entry => [
+  entry.height || 0,
+  entry.weight || 0,
+  entry.grasa_corporal || 0,
+  entry.masa_muscular || 0,
+  entry.liquido_corporal || 0
+]);
 
-    const option = {
-      backgroundColor: '#161627',
-      title: {
-        text: 'Progreso corporal',
-        left: 'center',
-        textStyle: { color: '#eee' }
-      },
-      legend: {
-        bottom: 5,
-        data: labels,
-        textStyle: { color: '#fff', fontSize: 14 }
-      },
-      radar: {
-        indicator: indicators,
-        shape: 'circle',
-        splitNumber: 5,
-        axisName: { color: 'rgb(238, 197, 102)' },
-        splitLine: {
-          lineStyle: {
-            color: [
-              'rgba(238, 197, 102, 0.1)',
-              'rgba(238, 197, 102, 0.2)',
-              'rgba(238, 197, 102, 0.4)',
-              'rgba(238, 197, 102, 0.6)',
-              'rgba(238, 197, 102, 0.8)',
-              'rgba(238, 197, 102, 1)'
-            ].reverse()
-          }
-        },
-        splitArea: { show: false },
-        axisLine: {
-          lineStyle: { color: 'rgba(238, 197, 102, 0.5)' }
-        }
-      },
-      series: dataRadar.map((data, idx) => ({
-        name: labels[idx],
-        type: 'radar',
-        data: [data],
-        areaStyle: { opacity: 0.5 },
-        lineStyle: { width: 1, opacity: 0.5 },
-        symbol: 'none',
-        itemStyle: {
-          color: idx === 0 ? '#B3E4A1' : 'rgb(238, 197, 102)'
-        }
-      }))
-    };
+// Creamos las etiquetas para la leyenda, usando las fechas
+const labels = chartData.map(entry => entry.fecha || 'Sin fecha');
 
-    const myChart = echarts.init(document.getElementById('radarChart'));
-    myChart.setOption(option);
+// Configuración del gráfico radar
+const option = {
+  backgroundColor: '#161627',
+  title: {
+    text: 'Progreso corporal',
+    left: 'center',
+    textStyle: { color: '#eee' }
+  },
+  legend: {
+    bottom: 5,
+    data: labels,
+    textStyle: { color: '#fff', fontSize: 14 }
+  },
+  radar: {
+    indicator: indicators,
+    shape: 'circle',
+    splitNumber: 5,
+    axisName: { color: 'rgb(238, 197, 102)' },
+    splitLine: {
+      lineStyle: {
+        color: [
+          'rgba(238, 197, 102, 0.1)',
+          'rgba(238, 197, 102, 0.2)',
+          'rgba(238, 197, 102, 0.4)',
+          'rgba(238, 197, 102, 0.6)',
+          'rgba(238, 197, 102, 0.8)',
+          'rgba(238, 197, 102, 1)'
+        ].reverse()
+      }
+    },
+    splitArea: { show: false },
+    axisLine: {
+      lineStyle: { color: 'rgba(238, 197, 102, 0.5)' }
+    }
+  },
+  series: dataRadar.map((data, idx) => ({
+    name: labels[idx],
+    type: 'radar',
+    data: [data],
+    areaStyle: { opacity: 0.5 },
+    lineStyle: { width: 1, opacity: 0.5 },
+    symbol: 'none',
+    itemStyle: {
+      color: idx === 0 ? '#B3E4A1' : 'rgb(238, 197, 102)'
+    }
+  }))
+};
+
+// Inicializamos el gráfico en el div con id 'radarChart'
+const myChart = echarts.init(document.getElementById('radarChart'));
+myChart.setOption(option);
+
   </script>
 
   <footer class="footer">
