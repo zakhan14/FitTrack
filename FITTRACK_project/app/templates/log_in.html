@@ -21,14 +21,15 @@
     <h2>Iniciar sesión</h2>
     <form method="post" action="{% url 'log_in' %}">
       {% csrf_token %}
-    <div class="form-group">
-      {{ form.email.label_tag }}
-      {{ form.email }}
-      {% if form.email.errors %}
-    <div class="error">{{ form.email.errors }}</div>
-      {% endif %}
-    </div>
-
+      
+      <div class="form-group">
+        {{ form.email.label_tag }}
+        {{ form.email }}
+        {% if form.email.errors %}
+          <div class="error">{{ form.email.errors }}</div>
+        {% endif %}
+      </div>
+      
       <div class="form-group">
         {{ form.password.label_tag }}
         {{ form.password }}
@@ -37,7 +38,6 @@
         {% endif %}
       </div>
       
-      <!-- Campo oculto para mantener la URL next -->
       <input type="hidden" name="next" value="{{ next }}">
 
       <button type="submit" class="btn">Entrar</button>
