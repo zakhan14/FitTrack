@@ -1,14 +1,20 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
-from .models import User  # Importa tu User personalizado
+from .models import User  # Importa tu modelo personalizado
+
 class SignUpForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput, label='Contraseña')
-    confirm_password = forms.CharField(widget=forms.PasswordInput, label='Confirmar contraseña')
+    password = forms.CharField(
+        widget=forms.PasswordInput,
+        label='Contraseña'
+    )
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput,
+        label='Confirmar contraseña'
+    )
 
     class Meta:
         model = User
-        # NO incluimos 'username' aquí para que no aparezca en el formulario
         fields = ['nickname', 'email', 'password']
         labels = {
             'nickname': 'Nickname',
@@ -27,16 +33,15 @@ class SignUpForm(forms.ModelForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        # Para evitar error, asignamos username igual a nickname o email (lo que prefieras)
-        user.username = user.nickname  # O user.email
-        user.set_password(self.cleaned_data['password'])
+        user.username = user.nickname  # Usamos el nickname como username
+        user.set_password(self.cleaned_data['password'])  # Encripta la contraseña
         if commit:
             user.save()
         return user
 
 class CustomLoginForm(AuthenticationForm):
     username = forms.CharField(
-        label='Nickname o Correo electrónico',
+        label='Nickname',
         widget=forms.TextInput(attrs={'autocomplete': 'username'})
     )
     password = forms.CharField(
