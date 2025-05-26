@@ -84,7 +84,7 @@ def progreso(request):
             bodydata.save()
             last_measurement = bodydata
 
-            # En este caso solo guardamos, sin comparación visual
+        # En este caso solo guardamos, sin comparación visual
             return redirect('progreso')
 
         elif 'comparar' in request.POST and form.is_valid():
@@ -120,7 +120,7 @@ def progreso(request):
                 'labels': json.dumps(labels, cls=DjangoJSONEncoder),
             })
 
-    # GET o POST sin guardar ni comparar: solo formulario vacío y sin datos radar
+# Si no es POST o no entra en ninguno de los if anteriores
     return render(request, 'progreso.html', {
         'form': form,
         'data_radar': json.dumps([], cls=DjangoJSONEncoder),
