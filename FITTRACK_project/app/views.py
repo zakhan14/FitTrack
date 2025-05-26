@@ -69,87 +69,73 @@ def detalle(request):
 def progreso(request):
     form = BodyDataForm(request.POST or None)
     last_measurement = request.user.body_data.order_by('-mesures_update').first()
-    chart_data = []
+    dataRadar = []
+    indicator = [
+        {'name': 'Altura', 'max': 220},
+        {'name': 'Peso', 'max': 120},
+        {'name': 'Grasa corporal', 'max': 40},
+        {'name': 'Masa muscular', 'max': 60},
+        {'name': 'Líquido corporal', 'max': 70},
+    ]
 
     if request.method == 'POST':
-        if 'guardar' in request.POST:
-            # Guardar nueva medición y luego mostrar gráfico con esa medición guardada
-            if form.is_valid():
-                bodydata = form.save(commit=False)
-                bodydata.user = request.user
-                bodydata.save()
-                # Recargar la última medición tras guardar
-                last_measurement = bodydata
-                chart_data = [{
-                    'height': last_measurement.height,
-                    'weight': last_measurement.weight,
-                    'grasa_corporal': last_measurement.grasa_corporal,
-                    'masa_muscular': last_measurement.masa_muscular,
-                    'liquido_corporal': last_measurement.liquido_corporal,
-                    'fecha': last_measurement.mesures_update.strftime('%Y-%m-%d'),
-                }]
-                return render(request, 'progreso.html', {
-                    'form': BodyDataForm(),  # formulario limpio tras guardar
-                    'chart_data': json.dumps(chart_data, cls=DjangoJSONEncoder),
-                })
+        if 'guardar' in request.POST and form.is_valid():
+            bodydata = form.save(commit=False)
+            bodydata.user = request.user
+            bodydata.save()
+            last_measurement = bodydata
 
-        elif 'comparar' in request.POST:
-            # No guardamos, tomamos datos del formulario + última medición guardada y comparamos
-            if form.is_valid():
-                form_data = form.cleaned_data
-                if last_measurement:
-                    chart_data = [
-                        {
-                            'height': last_measurement.height,
-                            'weight': last_measurement.weight,
-                            'grasa_corporal': last_measurement.grasa_corporal,
-                            'masa_muscular': last_measurement.masa_muscular,
-                            'liquido_corporal': last_measurement.liquido_corporal,
-                            'fecha': last_measurement.mesures_update.strftime('%Y-%m-%d'),
-                        },
-                        {
-                            'height': form_data['height'],
-                            'weight': form_data['weight'],
-                            'grasa_corporal': form_data['grasa_corporal'],
-                            'masa_muscular': form_data['masa_muscular'],
-                            'liquido_corporal': form_data['liquido_corporal'],
-                            'fecha': 'Formulario (sin guardar)',
-                        }
+        elif 'comparar' in request.POST and form.is_valid():
+            form_data = form.cleaned_data
+            # Datos para comparar
+            if last_measurement:
+                dataRadar = [
+                    [
+                        last_measurement.height,
+                        last_measurement.weight,
+                        last_measurement.grasa_corporal,
+                        last_measurement.masa_muscular,
+                        last_measurement.liquido_corporal
+                    ],
+                    [
+                        form_data['height'],
+                        form_data['weight'],
+                        form_data['grasa_corporal'],
+                        form_data['masa_muscular'],
+                        form_data['liquido_corporal']
                     ]
-                else:
-                    # No hay última medición guardada, solo mostramos formulario
-                    chart_data = [
-                        {
-                            'height': form_data['height'],
-                            'weight': form_data['weight'],
-                            'grasa_corporal': form_data['grasa_corporal'],
-                            'masa_muscular': form_data['masa_muscular'],
-                            'liquido_corporal': form_data['liquido_corporal'],
-                            'fecha': 'Formulario (sin guardar)',
-                        }
-                    ]
+                ]
+            else:
+                dataRadar = [[
+                    form_data['height'],
+                    form_data['weight'],
+                    form_data['grasa_corporal'],
+                    form_data['masa_muscular'],
+                    form_data['liquido_corporal']
+                ]]
 
-                return render(request, 'progreso.html', {
-                    'form': form,
-                    'chart_data': json.dumps(chart_data, cls=DjangoJSONEncoder),
-                })
+            return render(request, 'progreso.html', {
+                'form': form,
+                'data_radar': json.dumps(dataRadar, cls=DjangoJSONEncoder),
+                'indicator': json.dumps(indicator, cls=DjangoJSONEncoder),
+                'labels': json.dumps(['Guardado', 'Formulario (sin guardar)']),
+            })
 
-    # GET o cualquier otro caso: mostramos solo la última medición
+    # GET o tras guardar: mostrar solo último registro
     if last_measurement:
-        chart_data = [{
-            'height': last_measurement.height,
-            'weight': last_measurement.weight,
-            'grasa_corporal': last_measurement.grasa_corporal,
-            'masa_muscular': last_measurement.masa_muscular,
-            'liquido_corporal': last_measurement.liquido_corporal,
-            'fecha': last_measurement.mesures_update.strftime('%Y-%m-%d'),
-        }]
-    else:
-        chart_data = []
+        dataRadar = [[
+            last_measurement.height,
+            last_measurement.weight,
+            last_measurement.grasa_corporal,
+            last_measurement.masa_muscular,
+            last_measurement.liquido_corporal
+        ]]
 
     return render(request, 'progreso.html', {
         'form': form,
-        'chart_data': json.dumps(chart_data, cls=DjangoJSONEncoder),
+        'data_radar': json.dumps(dataRadar, cls=DjangoJSONEncoder),
+        'indicator': json.dumps(indicator, cls=DjangoJSONEncoder),
+        'labels': json.dumps(['Última medición']),
     })
 
 @login_required(login_url='log_in')

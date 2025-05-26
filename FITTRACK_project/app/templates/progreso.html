@@ -12,7 +12,7 @@
 <body>
   <header class="navbar">
     <div class="navbar-left">
-      <a href="{% url 'index' %}" ><h1>FTR</h1></a>
+      <a href="{% url 'index' %}"><h1>FTR</h1></a>
     </div>
 
     <nav class="navbar-center">
@@ -21,7 +21,7 @@
     </nav>
 
     <div class="navbar-right">
-      <a href="{% url 'index' %}" class="btn">Log Out</a>
+      <a href="{% url 'custom_logout' %}" class="btn">Log Out</a>
     </div>
   </header>
 
@@ -36,50 +36,85 @@
     {{ chart_data|json_script:"chart-data" }}
   </div>
 
-  <div id="main" style="width: 100%; max-width: 600px; height: 400px; margin: auto;"></div>
+  <!-- Contenedor para el gráfico -->
+  <div id="radarChart" style="width: 100%; max-width: 600px; height: 400px; margin: auto;"></div>
 
- <script>
-  const chartData = JSON.parse(document.getElementById('chart-data').textContent);
+  <script>
+    // Obtener datos del contexto Django
+    const chartData = JSON.parse(document.getElementById('chart-data').textContent);
 
-  if (chartData.length > 0) {
-    const labels = ['Altura (cm)', 'Peso (kg)', 'Grasa (%)', 'Músculo (%)', 'Líquidos (%)'];
+    // Construimos indicadores y datos para el radar
+    const indicators = [
+      { name: 'Altura', max: 250 },
+      { name: 'Peso', max: 200 },
+      { name: 'Grasa Corporal', max: 50 },
+      { name: 'Masa Muscular', max: 100 },
+      { name: 'Líquido Corporal', max: 70 }
+    ];
 
-    const radarValues = chartData.map(entry => [
-      entry.height,
-      entry.weight,
-      entry.grasa_corporal,
-      entry.masa_muscular,
-      entry.liquido_corporal
+    // Mapear chartData para formato radar
+    // En chartData vienen uno o dos objetos con las medidas para comparar
+    const dataRadar = chartData.map(entry => [
+      entry.height || 0,
+      entry.weight || 0,
+      entry.grasa_corporal || 0,
+      entry.masa_muscular || 0,
+      entry.liquido_corporal || 0
     ]);
 
-    const seriesData = radarValues.map((val, idx) => ({
-      value: val,
-      name: chartData[idx].fecha
-    }));
+    // Etiquetas para la leyenda: fechas o 'Formulario (sin guardar)'
+    const labels = chartData.map(entry => entry.fecha);
 
     const option = {
+      backgroundColor: '#161627',
       title: {
-        text: 'Comparación corporal',
-        left: 'center'
+        text: 'Progreso corporal',
+        left: 'center',
+        textStyle: { color: '#eee' }
       },
-      tooltip: {},
+      legend: {
+        bottom: 5,
+        data: labels,
+        textStyle: { color: '#fff', fontSize: 14 }
+      },
       radar: {
-        indicator: labels.map(label => ({ name: label, max: 200 })),
-        shape: 'circle'
+        indicator: indicators,
+        shape: 'circle',
+        splitNumber: 5,
+        axisName: { color: 'rgb(238, 197, 102)' },
+        splitLine: {
+          lineStyle: {
+            color: [
+              'rgba(238, 197, 102, 0.1)',
+              'rgba(238, 197, 102, 0.2)',
+              'rgba(238, 197, 102, 0.4)',
+              'rgba(238, 197, 102, 0.6)',
+              'rgba(238, 197, 102, 0.8)',
+              'rgba(238, 197, 102, 1)'
+            ].reverse()
+          }
+        },
+        splitArea: { show: false },
+        axisLine: {
+          lineStyle: { color: 'rgba(238, 197, 102, 0.5)' }
+        }
       },
-      series: [{
+      series: dataRadar.map((data, idx) => ({
+        name: labels[idx],
         type: 'radar',
-        data: seriesData
-      }]
+        data: [data],
+        areaStyle: { opacity: 0.5 },
+        lineStyle: { width: 1, opacity: 0.5 },
+        symbol: 'none',
+        itemStyle: {
+          color: idx === 0 ? '#B3E4A1' : 'rgb(238, 197, 102)'
+        }
+      }))
     };
 
-    const myChart = echarts.init(document.getElementById('main'));
+    const myChart = echarts.init(document.getElementById('radarChart'));
     myChart.setOption(option);
-  } else {
-    document.getElementById('main').innerHTML = '<p style="text-align:center;">No hay mediciones para mostrar.</p>';
-  }
-</script>
-
+  </script>
 
   <footer class="footer">
     <div class="footer-left">
