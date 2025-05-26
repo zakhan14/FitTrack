@@ -4,79 +4,22 @@
 <head>
   <meta charset="UTF-8" />
   <title>Detalle de Entrenamiento</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/detalle.css' %}" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
-    main {
-      max-width: 600px;
-      margin: 2rem auto;
-      padding: 1rem;
-      background-color: #f0f4f8;
-      border-radius: 8px;
-      font-family: 'Roboto', sans-serif;
-    }
-    h2 {
-      margin-bottom: 1rem;
-      color: #2a3e65;
-    }
-    p {
-      font-size: 1.1rem;
-      margin: 0.5rem 0;
-    }
-    .btn-group {
-      margin-top: 1.5rem;
-      display: flex;
-      gap: 1rem;
-    }
-    button {
-      padding: 10px 15px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
-      font-weight: 500;
-      transition: background-color 0.3s;
-    }
-    button.edit-btn {
-      background-color: #4caf50;
-      color: white;
-    }
-    button.edit-btn:hover {
-      background-color: #45a049;
-    }
-    button.delete-btn {
-      background-color: #f44336;
-      color: white;
-    }
-    button.delete-btn:hover {
-      background-color: #da190b;
-    }
-    a.back-link {
-      display: inline-block;
-      margin-top: 2rem;
-      color: #a9bbd8;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    a.back-link:hover {
-      text-decoration: underline;
-    }
   </style>
 </head>
 <body>
-  <header class="navbar">
+<header class="navbar">
     <div class="navbar-left">
-      <a href="{% url 'index' %}" id="h1">FTR</a>
+      <a href="{% url 'index' %}"><h1>FTR</h1></a>
     </div>
     <nav class="navbar-center">
-      <a href="{% url 'entrenamiento' %}">Entrenamiento</a>
+      <a href="{% url 'index' %}">Inicio</a>
       <a href="{% url 'progreso' %}">Progreso</a>
     </nav>
     <div class="navbar-right">
-      <form method="POST" action="{% url 'custom_logout' %}">
-        {% csrf_token %}
-        <button type="submit" class="nav-button">Log Out</button>
-      </form>
+      <a href="{% url 'index' %}" class="btn">Log Out</a>
     </div>
   </header>
 
