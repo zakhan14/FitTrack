@@ -67,7 +67,7 @@ def detalle(request):
     id = request.GET.get('id')
     return render(request, 'detalle.html', {'id': id})
 
-class progreso(LoginRequiredMixin, FormMixin, ListView):
+class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
     model = BodyData
     form_class = BodyDataForm
     template_name = 'progreso.html'
