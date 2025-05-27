@@ -191,6 +191,11 @@ form#calcForm button:hover {
 }
 
 /* Resultado */
+#radarChart {
+  background-color: transparent !important;
+}
+
+
 #resultado {
   max-width: 350px;
   margin: 0 auto;
