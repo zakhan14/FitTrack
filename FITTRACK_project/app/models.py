@@ -16,15 +16,13 @@ class BodyData(models.Model):
     grasa_corporal = models.FloatField()
     liquido_corporal = models.FloatField()
     masa_muscular = models.FloatField()
-    mesures_update = models.DateTimeField(auto_now=True)
-
+    mesures_update = models.DateTimeField()
 
     class Meta:
         ordering = ['-mesures_update']
 
     def __str__(self):
-        return f"Medidas de {self.user.username} - {self.mesures_update}"
-
+        return f"Medidas de {self.user.nickname} - {self.mesures_update}"
 
 class Training(models.Model):
     TIPO_ENTRENAMIENTO = [
