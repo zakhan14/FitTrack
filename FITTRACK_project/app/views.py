@@ -9,6 +9,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 import json
 
 from .forms import SignUpForm, CustomLoginForm, BodyDataForm
+from .models import BodyData  # asegúrate de importar tu modelo
 
 User = get_user_model()
 
@@ -67,7 +68,7 @@ def detalle(request):
 @login_required(login_url='log_in')
 def progreso(request):
     form = BodyDataForm(request.POST or None)
-    last_measurement = request.user.body_data.order_by('-mesures_update').first()
+    user = request.user
 
     indicator = [
         {'name': 'Altura', 'max': 220},
@@ -77,41 +78,50 @@ def progreso(request):
         {'name': 'Líquido corporal', 'max': 70},
     ]
 
-    if request.method == 'POST':
-        if 'guardar' in request.POST and form.is_valid():
+    if request.method == 'POST' and form.is_valid():
+        if 'guardar' in request.POST:
             bodydata = form.save(commit=False)
-            bodydata.user = request.user
+            bodydata.user = user
             bodydata.save()
-            last_measurement = bodydata
-
-        # En este caso solo guardamos, sin comparación visual
             return redirect('progreso')
 
-        elif 'comparar' in request.POST and form.is_valid():
-            form_data = form.cleaned_data
+        elif 'comparar' in request.POST:
+            mediciones = list(user.body_data.order_by('-mesures_update')[:2])
             dataRadar = []
+            labels = []
 
-            if last_measurement:
+            if len(mediciones) >= 1:
+                ultima = mediciones[0]
                 dataRadar.append([
-                    last_measurement.height,
-                    last_measurement.weight,
-                    last_measurement.grasa_corporal,
-                    last_measurement.masa_muscular,
-                    last_measurement.liquido_corporal
+                    ultima.height,
+                    ultima.weight,
+                    ultima.grasa_corporal,
+                    ultima.masa_muscular,
+                    ultima.liquido_corporal
                 ])
-                label_1 = "Guardado"
+                labels.append("Última medición")
+
+            if len(mediciones) == 2:
+                anterior = mediciones[1]
+                dataRadar.append([
+                    anterior.height,
+                    anterior.weight,
+                    anterior.grasa_corporal,
+                    anterior.masa_muscular,
+                    anterior.liquido_corporal
+                ])
+                labels.append("Medición anterior")
             else:
-                label_1 = "No hay medición previa"
-
-            dataRadar.append([
-                form_data['height'],
-                form_data['weight'],
-                form_data['grasa_corporal'],
-                form_data['masa_muscular'],
-                form_data['liquido_corporal']
-            ])
-
-            labels = [label_1, "Formulario (sin guardar)"]
+                # Si no hay anterior, comparar con datos actuales del formulario (sin guardar)
+                current_data = form.cleaned_data
+                dataRadar.append([
+                    current_data['height'],
+                    current_data['weight'],
+                    current_data['grasa_corporal'],
+                    current_data['masa_muscular'],
+                    current_data['liquido_corporal']
+                ])
+                labels.append("Formulario (sin guardar)")
 
             return render(request, 'progreso.html', {
                 'form': form,
@@ -120,7 +130,7 @@ def progreso(request):
                 'labels': json.dumps(labels, cls=DjangoJSONEncoder),
             })
 
-# Si no es POST o no entra en ninguno de los if anteriores
+    # Si no es POST o el formulario no es válido
     return render(request, 'progreso.html', {
         'form': form,
         'data_radar': json.dumps([], cls=DjangoJSONEncoder),

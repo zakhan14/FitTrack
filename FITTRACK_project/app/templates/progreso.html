@@ -33,6 +33,11 @@
       <button type="submit" name="guardar">Guardar nueva medición</button>
       <button type="submit" name="comparar">Comparar</button>
     </form>
+    
+      {% if labels %}
+      <h3 style="text-align:center;">Comparando: {{ labels.0 }} vs {{ labels.1 }}</h3>
+      {% endif %}
+
 
     {{ data_radar|json_script:"data-radar" }}
     {{ indicator|json_script:"indicator-data" }}
