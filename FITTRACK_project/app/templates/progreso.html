@@ -43,9 +43,13 @@
     {{ labels|json_script:"labels-data" }}
   </div>
 
-  <div id="radarChart" style="width: 100%; max-width: 600px; height: 400px; margin: auto;">
-    <p>holi</p>
-  </div>
+  <div class="grafico-radar">
+  <RadarChart
+    data={{ data_radar|safe }}
+    indicators={{ indicator|safe }}
+    labels={{ labels|safe }}
+  />
+</div>
 
   <script>
     const dataRadarRaw = document.getElementById('data-radar').textContent;

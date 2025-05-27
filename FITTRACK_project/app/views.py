@@ -4,7 +4,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model, authenticate
 from django.utils.http import url_has_allowed_host_and_scheme
-from django.urls import reverse
+from django.urls import reverse_lazy, reverse
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 from django.views.generic import ListView
@@ -69,20 +69,37 @@ def detalle(request):
 
 class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
     model = BodyData
-    form_class = BodyDataForm
     template_name = 'progreso.html'
+    form_class = BodyDataForm
     context_object_name = 'mediciones'
-    paginate_by = 10  # opcional
+    login_url = 'log_in'
+    success_url = reverse_lazy('progreso')
 
     def get_queryset(self):
-        # Solo mediciones del usuario actual ordenadas por fecha descendente
         return BodyData.objects.filter(user=self.request.user).order_by('-mesures_update')
 
-    def get_success_url(self):
-        return reverse('progreso')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.get_form()
 
-    def get_indicator(self):
-        return [
+        indicator = [
+            {'name': 'Altura', 'max': 220},
+            {'name': 'Peso', 'max': 120},
+            {'name': 'Grasa corporal', 'max': 40},
+            {'name': 'Masa muscular', 'max': 60},
+            {'name': 'Líquido corporal', 'max': 70},
+        ]
+        context['indicator'] = json.dumps(indicator, cls=DjangoJSONEncoder)
+        context['data_radar'] = json.dumps([], cls=DjangoJSONEncoder)
+        context['labels'] = json.dumps([], cls=DjangoJSONEncoder)
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        form = self.get_form()
+
+        indicator = [
             {'name': 'Altura', 'max': 220},
             {'name': 'Peso', 'max': 120},
             {'name': 'Grasa corporal', 'max': 40},
@@ -90,44 +107,21 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
             {'name': 'Líquido corporal', 'max': 70},
         ]
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        # Indicadores para el radar
-        indicator = self.get_indicator()
-
-        # Si ya se pasó data_radar, indicator o labels por kwargs (ej: en POST comparar)
-        data_radar = kwargs.get('data_radar', json.dumps([]))
-        labels = kwargs.get('labels', json.dumps([]))
-
-        context['indicator'] = json.dumps(indicator, cls=DjangoJSONEncoder)
-        context['data_radar'] = data_radar
-        context['labels'] = labels
-        context['form'] = kwargs.get('form', self.get_form())
-        return context
-
-    def form_valid(self, form):
-        # Guardar nueva medición
-        bodydata = form.save(commit=False)
-        bodydata.user = self.request.user
-        bodydata.save()
-        return redirect(self.get_success_url())
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-
         if form.is_valid():
             if 'guardar' in request.POST:
-                return self.form_valid(form)
+                bodydata = form.save(commit=False)
+                bodydata.user = request.user
+                bodydata.save()
+                return redirect('progreso')
 
             elif 'comparar' in request.POST:
-                mediciones = list(self.get_queryset()[:2])  # dos últimas
-                data_radar = []
+                mediciones = list(self.object_list[:2])
+                dataRadar = []
                 labels = []
 
                 if len(mediciones) >= 1:
                     ultima = mediciones[0]
-                    data_radar.append([
+                    dataRadar.append([
                         ultima.height,
                         ultima.weight,
                         ultima.grasa_corporal,
@@ -138,7 +132,7 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
 
                 if len(mediciones) == 2:
                     anterior = mediciones[1]
-                    data_radar.append([
+                    dataRadar.append([
                         anterior.height,
                         anterior.weight,
                         anterior.grasa_corporal,
@@ -147,9 +141,8 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
                     ])
                     labels.append("Medición anterior")
                 else:
-                    # Si solo hay una medición, compara con datos actuales del formulario sin guardar
                     current_data = form.cleaned_data
-                    data_radar.append([
+                    dataRadar.append([
                         current_data['height'],
                         current_data['weight'],
                         current_data['grasa_corporal'],
@@ -158,13 +151,15 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
                     ])
                     labels.append("Formulario (sin guardar)")
 
-                return self.render_to_response(self.get_context_data(
-                    form=form,
-                    data_radar=json.dumps(data_radar, cls=DjangoJSONEncoder),
-                    labels=json.dumps(labels, cls=DjangoJSONEncoder)
-                ))
+                context = self.get_context_data()
+                context.update({
+                    'data_radar': json.dumps(dataRadar, cls=DjangoJSONEncoder),
+                    'indicator': json.dumps(indicator, cls=DjangoJSONEncoder),
+                    'labels': json.dumps(labels, cls=DjangoJSONEncoder),
+                    'form': form,
+                })
+                return self.render_to_response(context)
 
-        # Formulario inválido, recargar con errores
         return self.form_invalid(form)
 # @login_required(login_url='log_in')
 # def progreso(request):
