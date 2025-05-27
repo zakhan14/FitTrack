@@ -115,24 +115,26 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
                 return redirect('progreso')
 
             elif 'comparar' in request.POST:
-                mediciones = list(self.object_list[:1])  # Solo la última medición guardada
+                # Última medición guardada del usuario
+                ultima = self.object_list.first()  # ya ordenadas por fecha descendente
+
+                current_data = form.cleaned_data  # datos del formulario
+
                 dataRadar = []
                 labels = []
 
-                if len(mediciones) == 1:
-                    ultima = mediciones[0]
-                # Añadimos la última medición guardada
+                # Verde: base de datos
+                if ultima:
                     dataRadar.append([
-                    ultima.height,
-                    ultima.weight,
-                    ultima.grasa_corporal,
-                    ultima.masa_muscular,
-                    ultima.liquido_corporal
-                ])
-                labels.append("Última medición guardada")
+                        ultima.height,
+                        ultima.weight,
+                        ultima.grasa_corporal,
+                        ultima.masa_muscular,
+                        ultima.liquido_corporal
+                    ])
+                    labels.append("Última medición")
 
-    # Añadimos los datos que acaba de introducir el usuario (sin guardar)
-                current_data = form.cleaned_data
+                # Amarillo: formulario actual
                 dataRadar.append([
                     current_data['height'],
                     current_data['weight'],
@@ -140,12 +142,18 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
                     current_data['masa_muscular'],
                     current_data['liquido_corporal']
                 ])
-                labels.append("Datos formulario (sin guardar)")
+                labels.append("Formulario (sin guardar)")
 
                 context = self.get_context_data()
                 context.update({
                     'data_radar': json.dumps(dataRadar, cls=DjangoJSONEncoder),
-                    'indicator': json.dumps(indicator, cls=DjangoJSONEncoder),
+                    'indicator': json.dumps([
+                        {'name': 'Altura', 'max': 220},
+                        {'name': 'Peso', 'max': 120},
+                        {'name': 'Grasa corporal %', 'max': 40},
+                        {'name': 'Masa muscular %', 'max': 60},
+                        {'name': 'Líquido corporal %', 'max': 70},
+                    ], cls=DjangoJSONEncoder),
                     'labels': json.dumps(labels, cls=DjangoJSONEncoder),
                     'form': form,
                 })

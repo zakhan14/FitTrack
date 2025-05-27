@@ -69,33 +69,85 @@
       }
 
 
-      const option = {
-        backgroundColor: 'transparent', // fondo transparente para el gráfico
-        title: {
-          text: 'Comparativa Corporal'
-        },
-        tooltip: {},
-        legend: {
-          data: labelsData
-        },
-        radar: {
-          indicator: indicatorData
-        },
-        series: [{
-          name: 'Mediciones',
-          type: 'radar',
-          data: dataRadar.map((val, idx) => ({
-            value: val,
-            name: labelsData[idx] || `Serie ${idx + 1}`
-          }))
-        }]
-      };
+          const option = {
+            backgroundColor: 'transparent',
+            title: {
+              text: 'Comparativa Corporal',
+              left: 'center',
+              top: 10,
+              textStyle: {
+                color: '#fff',
+                fontSize: 18
+              }
+            },
+            tooltip: {},
+            legend: {
+              data: labelsData,
+              bottom: 0,
+              textStyle: {
+                color: '#fff'
+              }
+            },
+            radar: {
+              indicator: indicatorData,
+              shape: 'polygon',
+              radius: 120,
+              name: {
+                textStyle: {
+                  color: '#ffcc66'
+                }
+              },
+              splitLine: {
+                lineStyle: {
+                  color: '#444'
+                }
+              },
+              splitArea: {
+                show: false
+              },
+              axisLine: {
+                lineStyle: {
+                  color: '#444'
+                }
+              }
+            },
+            series: [{
+              name: 'Comparación',
+              type: 'radar',
+              data: [
+                {
+                  value: dataRadar[0],
+                  name: labelsData[0],
+                  areaStyle: {
+                    color: 'rgba(0, 255, 0, 0.4)'
+                  },
+                  lineStyle: {
+                    color: 'rgba(0, 255, 0, 0.8)'
+                  },
+                  symbol: 'circle',
+                  itemStyle: {
+                    color: 'green'
+                  }
+                },
+                {
+                  value: dataRadar[1],
+                  name: labelsData[1],
+                  areaStyle: {
+                    color: 'rgba(255, 215, 0, 0.4)'
+                  },
+                  lineStyle: {
+                    color: 'rgba(255, 215, 0, 0.8)'
+                  },
+                  symbol: 'circle',
+                  itemStyle: {
+                    color: 'gold'
+                  }
+                }
+              ]
+            }]
+          };
 
-      chart.setOption(option);
-
-      window.addEventListener('resize', () => {
-        chart.resize();
-      });
+          chart.setOption(option);
     }
     // else {
     //   document.getElementById('radarChart').innerHTML = '<p style="text-align:center; margin-top:2rem; color:gray;">No hay datos suficientes para mostrar el gráfico radar.</p>';
