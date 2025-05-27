@@ -43,7 +43,7 @@
     {{ labels|json_script:"labels-data" }}
   </div>
 
-  <div class="grafico-radar">
+  <div class="grafico-radar" id="radarChart">
   <RadarChart
     data={{ data_radar|safe }}
     indicators={{ indicator|safe }}
