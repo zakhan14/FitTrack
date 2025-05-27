@@ -33,19 +33,16 @@
       <button type="submit" name="guardar">Guardar nueva medición</button>
       <button type="submit" name="comparar">Comparar</button>
     </form>
-    
-    {% if labels %}
-      <h3 style="text-align:center;">Comparando: {{ labels.0 }} vs {{ labels.1 }}</h3>
-    {% endif %}
-
-    {{ data_radar|json_script:"data-radar" }}
-    {{ indicator|json_script:"indicator-data" }}
-    {{ labels|json_script:"labels-data" }}
   </div>
-<!-- {% if data_radar and indicator %}
-  <div class="grafico-radar" id="radarChart"></div>
-{% endif %} -->
-
+  {{ data_radar|json_script:"data-radar" }}
+  {{ indicator|json_script:"indicator-data" }}
+  {{ labels|json_script:"labels-data" }}
+  {% if data_radar and indicator %}
+   <div class="grafico-radar" id="radarChart">
+   </div>
+  
+  {% endif %}
+  
   <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
   <script>
     const dataRadarRaw = document.getElementById('data-radar').textContent;

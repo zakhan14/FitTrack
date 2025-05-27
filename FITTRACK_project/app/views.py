@@ -115,41 +115,32 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
                 return redirect('progreso')
 
             elif 'comparar' in request.POST:
-                mediciones = list(self.object_list[:2])
+                mediciones = list(self.object_list[:1])  # Solo la última medición guardada
                 dataRadar = []
                 labels = []
 
-                if len(mediciones) >= 1:
+                if len(mediciones) == 1:
                     ultima = mediciones[0]
+                # Añadimos la última medición guardada
                     dataRadar.append([
-                        ultima.height,
-                        ultima.weight,
-                        ultima.grasa_corporal,
-                        ultima.masa_muscular,
-                        ultima.liquido_corporal
-                    ])
-                    labels.append("Última medición")
+                    ultima.height,
+                    ultima.weight,
+                    ultima.grasa_corporal,
+                    ultima.masa_muscular,
+                    ultima.liquido_corporal
+                ])
+                labels.append("Última medición guardada")
 
-                if len(mediciones) == 2:
-                    anterior = mediciones[1]
-                    dataRadar.append([
-                        anterior.height,
-                        anterior.weight,
-                        anterior.grasa_corporal,
-                        anterior.masa_muscular,
-                        anterior.liquido_corporal
-                    ])
-                    labels.append("Medición anterior")
-                else:
-                    current_data = form.cleaned_data
-                    dataRadar.append([
-                        current_data['height'],
-                        current_data['weight'],
-                        current_data['grasa_corporal'],
-                        current_data['masa_muscular'],
-                        current_data['liquido_corporal']
-                    ])
-                    labels.append("Formulario (sin guardar)")
+    # Añadimos los datos que acaba de introducir el usuario (sin guardar)
+                current_data = form.cleaned_data
+                dataRadar.append([
+                    current_data['height'],
+                    current_data['weight'],
+                    current_data['grasa_corporal'],
+                    current_data['masa_muscular'],
+                    current_data['liquido_corporal']
+                ])
+                labels.append("Datos formulario (sin guardar)")
 
                 context = self.get_context_data()
                 context.update({
