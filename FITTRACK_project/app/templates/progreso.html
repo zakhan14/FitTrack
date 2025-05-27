@@ -42,118 +42,102 @@
   {% if data_radar and indicator %}
   {% endif %}
   
-  <script>
-    const dataRadarRaw = document.getElementById('data-radar').textContent;
-    const indicatorRaw = document.getElementById('indicator-data').textContent;
-    const labelsRaw = document.getElementById('labels-data').textContent;
+<script>
+  // Recuperar los datos desde los elementos <script type="application/json">
+  const dataRadar = JSON.parse(document.getElementById('data-radar').textContent);
+  const indicatorData = JSON.parse(document.getElementById('indicator-data').textContent);
+  const labelsData = JSON.parse(document.getElementById('labels-data').textContent);
+
+  console.log("dataRadar", dataRadar);
+  console.log("labelsData", labelsData);
+  console.log("indicatorData", indicatorData);
+
+  // Solo pintar si hay datos válidos
+  if (dataRadar.length > 0 && labelsData.length === 2) {
     const chart = echarts.init(document.getElementById('radarChart'));
 
-    let dataRadar = [], indicatorData = [], labelsData = [];
-
-    try {
-      dataRadar = JSON.parse(dataRadarRaw);
-      indicatorData = JSON.parse(indicatorRaw);
-      labelsData = JSON.parse(labelsRaw);
-    } catch(e) {
-      console.error("Error parsing JSON:", e);
-    }
-
-    console.log("Datos recibidos para el radar:", dataRadar);
-    console.log("Indicadores:", indicatorData);
-    console.log("Etiquetas:", labelsData);
-
-    if (Array.isArray(dataRadar) && dataRadar.length > 0 && Array.isArray(indicatorData) && indicatorData.length > 0) {
-      // Asegura que cada elemento sea un array de valores
-      if (!Array.isArray(dataRadar[0])) {
-        dataRadar = [dataRadar];
-      }
-
-
-          const option = {
-            backgroundColor: 'transparent',
-            title: {
-              text: 'Comparativa Corporal',
-              left: 'center',
-              top: 10,
-              textStyle: {
-                color: '#fff',
-                fontSize: 18
-              }
+    const option = {
+      backgroundColor: 'transparent',
+      title: {
+        text: 'Comparativa Corporal',
+        left: 'center',
+        top: 10,
+        textStyle: {
+          color: '#fff',
+          fontSize: 18
+        }
+      },
+      tooltip: {},
+      legend: {
+        data: labelsData,
+        bottom: 0,
+        textStyle: {
+          color: '#fff'
+        }
+      },
+      radar: {
+        indicator: indicatorData,
+        shape: 'polygon',
+        radius: 120,
+        name: {
+          textStyle: {
+            color: '#ffcc66'
+          }
+        },
+        splitLine: {
+          lineStyle: {
+            color: '#444'
+          }
+        },
+        splitArea: {
+          show: false
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#444'
+          }
+        }
+      },
+      series: [{
+        name: 'Comparación',
+        type: 'radar',
+        data: [
+          {
+            value: dataRadar[0],
+            name: labelsData[0],
+            areaStyle: {
+              color: 'rgba(0, 255, 0, 0.4)'
             },
-            tooltip: {},
-            legend: {
-              data: labelsData,
-              bottom: 0,
-              textStyle: {
-                color: '#fff'
-              }
+            lineStyle: {
+              color: 'rgba(0, 255, 0, 0.8)'
             },
-            radar: {
-              indicator: indicatorData,
-              shape: 'polygon',
-              radius: 120,
-              name: {
-                textStyle: {
-                  color: '#ffcc66'
-                }
-              },
-              splitLine: {
-                lineStyle: {
-                  color: '#444'
-                }
-              },
-              splitArea: {
-                show: false
-              },
-              axisLine: {
-                lineStyle: {
-                  color: '#444'
-                }
-              }
+            itemStyle: {
+              color: 'green'
+            }
+          },
+          {
+            value: dataRadar[1],
+            name: labelsData[1],
+            areaStyle: {
+              color: 'rgba(255, 215, 0, 0.4)'
             },
-            series: [{
-              name: 'Comparación',
-              type: 'radar',
-              data: [
-                {
-                  value: dataRadar[0],
-                  name: labelsData[0],
-                  areaStyle: {
-                    color: 'rgba(0, 255, 0, 0.4)'
-                  },
-                  lineStyle: {
-                    color: 'rgba(0, 255, 0, 0.8)'
-                  },
-                  symbol: 'circle',
-                  itemStyle: {
-                    color: 'green'
-                  }
-                },
-                {
-                  value: dataRadar[1],
-                  name: labelsData[1],
-                  areaStyle: {
-                    color: 'rgba(255, 215, 0, 0.4)'
-                  },
-                  lineStyle: {
-                    color: 'rgba(255, 215, 0, 0.8)'
-                  },
-                  symbol: 'circle',
-                  itemStyle: {
-                    color: 'gold'
-                  }
-                }
-              ]
-            }]
-          };
+            lineStyle: {
+              color: 'rgba(255, 215, 0, 0.8)'
+            },
+            itemStyle: {
+              color: 'gold'
+            }
+          }
+        ]
+      }]
+    };
 
-          chart.setOption(option);
-    }
-    // else {
-    //   document.getElementById('radarChart').innerHTML = '<p style="text-align:center; margin-top:2rem; color:gray;">No hay datos suficientes para mostrar el gráfico radar.</p>';
-    //   console.log("No hay datos suficientes para mostrar el gráfico radar.");
-    // }
-  </script>
+    chart.setOption(option);
+  } else {
+    console.log("No hay datos suficientes para mostrar el gráfico radar.");
+  }
+</script>
+
 
   <footer class="footer">
     <div class="footer-left">
