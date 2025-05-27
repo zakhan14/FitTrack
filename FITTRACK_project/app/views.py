@@ -76,12 +76,14 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
     success_url = reverse_lazy('progreso')
 
     def get_queryset(self):
+        # Obtiene las mediciones del usuario actual ordenadas por fecha (descendente)
         return BodyData.objects.filter(user=self.request.user).order_by('-mesures_update')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = self.get_form()
 
+        # Indicadores fijos para el radar chart
         indicator = [
             {'name': 'Altura', 'max': 220},
             {'name': 'Peso', 'max': 120},
@@ -89,6 +91,8 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
             {'name': 'Masa muscular', 'max': 60},
             {'name': 'Líquido corporal', 'max': 70},
         ]
+
+        # Por defecto, no hay datos para mostrar en el radar
         context['indicator'] = json.dumps(indicator, cls=DjangoJSONEncoder)
         context['data_radar'] = json.dumps([], cls=DjangoJSONEncoder)
         context['labels'] = json.dumps([], cls=DjangoJSONEncoder)
@@ -109,17 +113,20 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
 
         if form.is_valid():
             if 'guardar' in request.POST:
+                # Guardar nueva medición vinculada al usuario
                 bodydata = form.save(commit=False)
                 bodydata.user = request.user
                 bodydata.save()
                 return redirect('progreso')
 
             elif 'comparar' in request.POST:
-                mediciones = list(self.object_list[:2])
+                # Comparar la última medición con la anterior o con los datos del formulario si no hay anterior
+                mediciones = list(self.object_list[:2])  # Últimas dos mediciones
                 dataRadar = []
                 labels = []
 
                 if len(mediciones) >= 1:
+                    # Datos de la última medición
                     ultima = mediciones[0]
                     dataRadar.append([
                         ultima.height,
@@ -131,6 +138,7 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
                     labels.append("Última medición")
 
                 if len(mediciones) == 2:
+                    # Datos de la medición anterior
                     anterior = mediciones[1]
                     dataRadar.append([
                         anterior.height,
@@ -141,6 +149,7 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
                     ])
                     labels.append("Medición anterior")
                 else:
+                    # No hay medición anterior, usar datos del formulario actual
                     current_data = form.cleaned_data
                     dataRadar.append([
                         current_data['height'],
@@ -160,6 +169,7 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
                 })
                 return self.render_to_response(context)
 
+        # En caso de formulario inválido, retorna la vista con errores
         return self.form_invalid(form)
 # @login_required(login_url='log_in')
 # def progreso(request):
