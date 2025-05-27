@@ -26,114 +26,81 @@
   </header>
 
   <h2 style="text-align: left; margin-left: 26%;">Introduce tus valores</h2>
-  <div id="contenedor-formulario-grafico">
-    <form method="post" id="calcForm">
+
+  <div id="contenedor-formulario-grafico" style="display:flex; gap: 2rem;">
+    <form method="post" id="formMediciones" style="flex: 1;">
       {% csrf_token %}
       {{ form.as_p }}
       <button type="submit" name="guardar">Guardar nueva medición</button>
     </form>
 
-    <div id="selector-mediciones" style="margin-top:20px;">
+    <form method="post" id="formComparar" style="flex: 1;">
+      {% csrf_token %}
       <h3>Selecciona mediciones para comparar:</h3>
-      <p>
-        <label><input type="checkbox" id="selectAll" checked> Seleccionar todo</label>
-      </p>
-      <!-- JS llenará los checkboxes individuales aquí -->
-    </div>
-
-    <div id="radarChart" style="width: 100%; height: 500px; margin-top: 30px;"></div>
+      <div id="selector-mediciones" style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 1rem;">
+        <!-- Aquí JS llenará los checkboxes -->
+      </div>
+      <button type="submit" name="comparar" style="margin-top: 1rem;">Comparar</button>
+    </form>
   </div>
 
+  <div id="radarChart" style="width: 100%; height: 500px; margin-top: 30px;"></div>
+
 <script>
-  // Datos pasados desde la vista Django
   const indicatorData = JSON.parse('{{ indicator|escapejs }}');
-  const dataRadar = JSON.parse('{{ data_radar|default:"[]"|escapejs }}');
-  const labelsData = JSON.parse('{{ labels|default:"[]"|escapejs }}');
+  const medicionesData = JSON.parse('{{ mediciones_data|escapejs }}');
 
-  // Contenedor para checkboxes de mediciones
-  const container = document.getElementById('selector-mediciones');
-
-  // Función para crear checkbox de medición
-  function crearCheckbox(id, labelText, checked = true) {
-    const p = document.createElement('p');
+  // Rellenar checkboxes en formComparar
+  const contenedorCheckboxes = document.getElementById('selector-mediciones');
+  medicionesData.forEach(med => {
     const label = document.createElement('label');
+    label.style.display = 'block';
+    label.style.marginBottom = '5px';
+
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
-    checkbox.className = 'medicion-checkbox';
-    checkbox.value = id;
-    checkbox.checked = checked;
+    checkbox.name = 'seleccionados';
+    checkbox.value = med.id;
+    checkbox.checked = true; // marcar todos por defecto
+
     label.appendChild(checkbox);
-    label.appendChild(document.createTextNode(' ' + labelText));
-    p.appendChild(label);
-    return p;
-  }
+    label.appendChild(document.createTextNode(` Medición ${med.fecha}`));
 
-  // Llenar checkboxes con datos de etiquetas y valores
-  for (let i = 0; i < dataRadar.length; i++) {
-    const checkboxElem = crearCheckbox(i, labelsData[i] || `Medición ${i+1}`, true);
-    container.appendChild(checkboxElem);
-  }
-
-  // Seleccionar todo checkbox
-  const selectAllCheckbox = document.getElementById('selectAll');
+    contenedorCheckboxes.appendChild(label);
+  });
 
   // Inicializar gráfico
   const chart = echarts.init(document.getElementById('radarChart'));
 
-  function actualizarGrafico(seleccionados) {
-    if (seleccionados.length === 0) {
+  function actualizarGrafico(dataRadar, labelsData) {
+    if (!dataRadar.length) {
       chart.clear();
+      chart.getDom().innerHTML = '<p style="text-align:center; margin-top:2rem; color:gray;">No hay datos para mostrar.</p>';
       return;
     }
-
-    const seriesData = seleccionados.map(i => ({
-      value: dataRadar[i],
-      name: labelsData[i] || `Medición ${parseInt(i)+1}`
-    }));
 
     const option = {
       backgroundColor: 'transparent',
       title: { text: 'Comparativa Corporal' },
       tooltip: {},
-      legend: { data: seriesData.map(d => d.name) },
+      legend: { data: labelsData },
       radar: { indicator: indicatorData },
       series: [{
         name: 'Mediciones',
         type: 'radar',
-        data: seriesData
+        data: dataRadar.map((val, idx) => ({
+          value: val,
+          name: labelsData[idx]
+        }))
       }]
     };
     chart.setOption(option);
   }
 
-  // Estado inicial: todos seleccionados
-  function getSeleccionados() {
-    const checkboxes = document.querySelectorAll('.medicion-checkbox');
-    return Array.from(checkboxes)
-      .filter(cb => cb.checked)
-      .map(cb => parseInt(cb.value));
-  }
-
-  actualizarGrafico(getSeleccionados());
-
-  // Evento para cada checkbox individual
-  container.addEventListener('change', (e) => {
-    if (e.target.classList.contains('medicion-checkbox')) {
-      const todos = document.querySelectorAll('.medicion-checkbox');
-      const todosSeleccionados = Array.from(todos).every(cb => cb.checked);
-      selectAllCheckbox.checked = todosSeleccionados;
-      actualizarGrafico(getSeleccionados());
-    }
-  });
-
-  // Evento para checkbox "Seleccionar todo"
-  selectAllCheckbox.addEventListener('change', (e) => {
-    const checked = e.target.checked;
-    const checkboxes = document.querySelectorAll('.medicion-checkbox');
-    checkboxes.forEach(cb => cb.checked = checked);
-    actualizarGrafico(getSeleccionados());
-  });
-
+  // Al cargar, mostrar datos si vienen desde contexto (tras comparar)
+  const dataRadar = JSON.parse('{{ data_radar|escapejs }}');
+  const labels = JSON.parse('{{ labels|escapejs }}');
+  actualizarGrafico(dataRadar, labels);
 </script>
 
 <footer class="footer">
