@@ -34,10 +34,9 @@
       <button type="submit" name="comparar">Comparar</button>
     </form>
     
-      {% if labels %}
+    {% if labels %}
       <h3 style="text-align:center;">Comparando: {{ labels.0 }} vs {{ labels.1 }}</h3>
-      {% endif %}
-
+    {% endif %}
 
     {{ data_radar|json_script:"data-radar" }}
     {{ indicator|json_script:"indicator-data" }}
@@ -47,98 +46,96 @@
   <div id="radarChart" style="width: 100%; max-width: 600px; height: 400px; margin: auto;"></div>
 
   <script>
-  const dataRadarRaw = document.getElementById('data-radar').textContent;
-  const indicatorRaw = document.getElementById('indicator-data').textContent;
-  const labelsRaw = document.getElementById('labels-data').textContent;
+    const dataRadarRaw = document.getElementById('data-radar').textContent;
+    const indicatorRaw = document.getElementById('indicator-data').textContent;
+    const labelsRaw = document.getElementById('labels-data').textContent;
 
-  let dataRadar, indicatorData, labelsData;
+    let dataRadar = [], indicatorData = [], labelsData = [];
 
-  try {
-    dataRadar = JSON.parse(dataRadarRaw);
-    indicatorData = JSON.parse(indicatorRaw);
-    labelsData = JSON.parse(labelsRaw);
-  } catch(e) {
-    console.error("Error parsing JSON:", e);
-    dataRadar = [];
-    indicatorData = [];
-    labelsData = [];
-  }
-
-  console.log("Datos recibidos para el radar:", dataRadar);
-  console.log("Indicadores:", indicatorData);
-  console.log("Etiquetas:", labelsData);
-
-  // Asegurar que dataRadar es array de arrays
-  if (Array.isArray(dataRadar) && dataRadar.length > 0) {
-    if (!Array.isArray(dataRadar[0])) {
-      dataRadar = [dataRadar]; // si es 1D, lo envolvemos en un array para que sea 2D
+    try {
+      dataRadar = JSON.parse(dataRadarRaw);
+      indicatorData = JSON.parse(indicatorRaw);
+      labelsData = JSON.parse(labelsRaw);
+    } catch(e) {
+      console.error("Error parsing JSON:", e);
     }
-  } else {
-    dataRadar = [];
-  }
 
-  if (dataRadar.length > 0 && indicatorData.length > 0 && labelsData.length > 0) {
-    const chart = echarts.init(document.getElementById('radarChart'));
+    console.log("Datos recibidos para el radar:", dataRadar);
+    console.log("Indicadores:", indicatorData);
+    console.log("Etiquetas:", labelsData);
 
-    const option = {
-      title: {
-        text: 'Comparativa Corporal'
-      },
-      tooltip: {},
-      legend: {
-        data: labelsData
-      },
-      radar: {
-        indicator: indicatorData
-      },
-      series: [{
-        name: 'Mediciones',
-        type: 'radar',
-        data: dataRadar.map((val, idx) => ({
-          value: val,
-          name: labelsData[idx] || `Serie ${idx + 1}`
-        }))
-      }]
-    };
+    if (Array.isArray(dataRadar) && dataRadar.length > 0 && Array.isArray(indicatorData) && indicatorData.length > 0) {
+      // Asegura que cada elemento sea un array de valores
+      if (!Array.isArray(dataRadar[0])) {
+        dataRadar = [dataRadar];
+      }
 
-    chart.setOption(option);
-  } else {
-    document.getElementById('radarChart').innerHTML = '<p style="text-align:center; margin-top:2rem; color:gray;">No hay datos suficientes para mostrar el gráfico radar.</p>';
-    console.log("No hay datos suficientes para mostrar el gráfico radar.");
-  }
-</script>
+      const chart = echarts.init(document.getElementById('radarChart'));
+
+      const option = {
+        title: {
+          text: 'Comparativa Corporal'
+        },
+        tooltip: {},
+        legend: {
+          data: labelsData
+        },
+        radar: {
+          indicator: indicatorData
+        },
+        series: [{
+          name: 'Mediciones',
+          type: 'radar',
+          data: dataRadar.map((val, idx) => ({
+            value: val,
+            name: labelsData[idx] || `Serie ${idx + 1}`
+          }))
+        }]
+      };
+
+      chart.setOption(option);
+
+      window.addEventListener('resize', () => {
+        chart.resize();
+      });
+
+    } else {
+      document.getElementById('radarChart').innerHTML = '<p style="text-align:center; margin-top:2rem; color:gray;">No hay datos suficientes para mostrar el gráfico radar.</p>';
+      console.log("No hay datos suficientes para mostrar el gráfico radar.");
+    }
+  </script>
 
   <footer class="footer">
-  <div class="footer-left">
-    <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
-    <div class="social-icons">
-      <a href="https://www.facebook.com/ZukaKhantadze" target="_blank" aria-label="Facebook">
-        <i class="bi bi-facebook"></i>
-      </a>
-      <a href="https://www.tiktok.com/@_zakhan_" target="_blank" aria-label="TikTok">
-        <i class="bi bi-tiktok"></i>
-      </a>
-      <a href="https://www.instagram.com/_zakhan_" target="_blank" aria-label="Instagram">
-        <i class="bi bi-instagram"></i>
-      </a>
+    <div class="footer-left">
+      <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+      <div class="social-icons">
+        <a href="https://www.facebook.com/ZukaKhantadze" target="_blank" aria-label="Facebook">
+          <i class="bi bi-facebook"></i>
+        </a>
+        <a href="https://www.tiktok.com/@_zakhan_" target="_blank" aria-label="TikTok">
+          <i class="bi bi-tiktok"></i>
+        </a>
+        <a href="https://www.instagram.com/_zakhan_" target="_blank" aria-label="Instagram">
+          <i class="bi bi-instagram"></i>
+        </a>
+      </div>
     </div>
-  </div>
-  <div class="footer-columns">
-    <div class="footer-column">
-      <h4>Contacto</h4>
-      <p>contacto@fittracker.com</p>
-      <p>+34 012 456 789</p>
+    <div class="footer-columns">
+      <div class="footer-column">
+        <h4>Contacto</h4>
+        <p>contacto@fittracker.com</p>
+        <p>+34 012 456 789</p>
+      </div>
+      <div class="footer-column">
+        <h4>Dirección</h4>
+        <p>Calle Inexistente 13</p>
+        <p>Madrid, España</p>
+      </div>
+      <div class="footer-column">
+        <h4>Redes Sociales</h4>
+        <p>Síguenos en Facebook, <br />TikTok e Instagram.</p>
+      </div>
     </div>
-    <div class="footer-column">
-      <h4>Dirección</h4>
-      <p>Calle Inexistente 13</p>
-      <p>Madrid, España</p>
-    </div>
-    <div class="footer-column">
-      <h4>Redes Sociales</h4>
-      <p>Síguenos en Facebook, <br />TikTok e Instagram.</p>
-    </div>
-  </div>
-</footer>
+  </footer>
 </body>
 </html>
