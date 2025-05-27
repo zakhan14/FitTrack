@@ -43,13 +43,8 @@
     {{ labels|json_script:"labels-data" }}
   </div>
 
-  <div class="grafico-radar" id="radarChart">
-  <RadarChart
-    data={{ data_radar|safe }}
-    indicators={{ indicator|safe }}
-    labels={{ labels|safe }}
-  />
-</div>
+<div class="grafico-radar" id="radarChart"></div>
+
 
   <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
   <script>

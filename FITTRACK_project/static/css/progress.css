@@ -348,3 +348,12 @@ footer {
     display: none; /* menú oculto en móvil */
   }
 }
+
+.grafico-radar {
+  width: 100%;
+  max-width: 600px;
+  height: 500px;
+  background-color: #fff; /* opcional para que veas el área */
+  border-radius: 10px; /* opcional */
+  box-shadow: 0 0 10px rgba(0,0,0,0.1); /* opcional */
+}
