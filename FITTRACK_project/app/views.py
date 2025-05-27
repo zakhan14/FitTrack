@@ -90,27 +90,8 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
             {'name': 'Líquido corporal', 'max': 70},
         ]
         context['indicator'] = json.dumps(indicator, cls=DjangoJSONEncoder)
-
-        # Pasar TODAS las mediciones para checkboxes en JS
-        mediciones = self.get_queryset()
-        mediciones_data = []
-        for m in mediciones:
-            mediciones_data.append({
-                'id': m.id,
-                'fecha': m.mesures_update.strftime('%Y-%m-%d'),
-                'data': [
-                    m.height,
-                    m.weight,
-                    m.grasa_corporal,
-                    m.masa_muscular,
-                    m.liquido_corporal,
-                ]
-            })
-        context['mediciones_data'] = json.dumps(mediciones_data, cls=DjangoJSONEncoder)
-
-        # Contexto para radar vacío por defecto (se actualiza tras comparar)
-        context.setdefault('data_radar', json.dumps([], cls=DjangoJSONEncoder))
-        context.setdefault('labels', json.dumps([], cls=DjangoJSONEncoder))
+        context['data_radar'] = json.dumps([], cls=DjangoJSONEncoder)
+        context['labels'] = json.dumps([], cls=DjangoJSONEncoder)
 
         return context
 
@@ -134,31 +115,41 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
                 return redirect('progreso')
 
             elif 'comparar' in request.POST:
-                # Aquí leeremos qué mediciones comparar desde POST (ids checkbox)
-                ids_seleccionados = request.POST.getlist('seleccionados')  # lista de ids
+                mediciones = list(self.object_list[:2])
+                dataRadar = []
+                labels = []
 
-                if not ids_seleccionados:
-                    # Si no selecciona nada, mostrar mensaje o gráfico vacío
-                    dataRadar = []
-                    labels = []
+                if len(mediciones) >= 1:
+                    ultima = mediciones[0]
+                    dataRadar.append([
+                        ultima.height,
+                        ultima.weight,
+                        ultima.grasa_corporal,
+                        ultima.masa_muscular,
+                        ultima.liquido_corporal
+                    ])
+                    labels.append("Última medición")
+
+                if len(mediciones) == 2:
+                    anterior = mediciones[1]
+                    dataRadar.append([
+                        anterior.height,
+                        anterior.weight,
+                        anterior.grasa_corporal,
+                        anterior.masa_muscular,
+                        anterior.liquido_corporal
+                    ])
+                    labels.append("Medición anterior")
                 else:
-                    # Sacamos las mediciones según IDs, en orden
-                    mediciones = list(BodyData.objects.filter(id__in=ids_seleccionados, user=request.user))
-
-                    # Ordenar mediciones en orden de la lista de IDs para mantener el orden checkbox
-                    mediciones.sort(key=lambda x: ids_seleccionados.index(str(x.id)))
-
-                    dataRadar = []
-                    labels = []
-                    for i, med in enumerate(mediciones):
-                        dataRadar.append([
-                            med.height,
-                            med.weight,
-                            med.grasa_corporal,
-                            med.masa_muscular,
-                            med.liquido_corporal
-                        ])
-                        labels.append(f"Medición {med.mesures_update.strftime('%Y-%m-%d')}")
+                    current_data = form.cleaned_data
+                    dataRadar.append([
+                        current_data['height'],
+                        current_data['weight'],
+                        current_data['grasa_corporal'],
+                        current_data['masa_muscular'],
+                        current_data['liquido_corporal']
+                    ])
+                    labels.append("Formulario (sin guardar)")
 
                 context = self.get_context_data()
                 context.update({
