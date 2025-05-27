@@ -194,6 +194,9 @@ form#calcForm button:hover {
 #grafico-radar,
 #radarChart {
   background-color: transparent !important;
+  width: 600px;
+  height: 400px;
+  margin: auto;
 }
 
 #resultado {

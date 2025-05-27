@@ -1,9 +1,10 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <title>Gráfico de Rendimiento</title>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Gráfico de Rendimiento</title>
+    
   <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
   <link rel="icon" href="{% static 'images/logo.png' %}">
   <link rel="stylesheet" href="{% static 'css/progress.css' %}" />
@@ -37,17 +38,15 @@
   {{ data_radar|json_script:"data-radar" }}
   {{ indicator|json_script:"indicator-data" }}
   {{ labels|json_script:"labels-data" }}
+  <div class="grafico-radar" id="radarChart"></div>
   {% if data_radar and indicator %}
-   <div class="grafico-radar" id="radarChart">
-   </div>
-  
   {% endif %}
   
-  <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
   <script>
     const dataRadarRaw = document.getElementById('data-radar').textContent;
     const indicatorRaw = document.getElementById('indicator-data').textContent;
     const labelsRaw = document.getElementById('labels-data').textContent;
+    const chart = echarts.init(document.getElementById('radarChart'));
 
     let dataRadar = [], indicatorData = [], labelsData = [];
 
@@ -69,7 +68,6 @@
         dataRadar = [dataRadar];
       }
 
-      const chart = echarts.init(document.getElementById('radarChart'));
 
       const option = {
         backgroundColor: 'transparent', // fondo transparente para el gráfico
