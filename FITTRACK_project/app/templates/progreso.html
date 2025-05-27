@@ -42,9 +42,9 @@
     {{ indicator|json_script:"indicator-data" }}
     {{ labels|json_script:"labels-data" }}
   </div>
-
-<div class="grafico-radar" id="radarChart"></div>
-
+{% if data_radar and indicator %}
+  <div class="grafico-radar" id="radarChart"></div>
+{% endif %}
 
   <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
   <script>
@@ -101,11 +101,11 @@
       window.addEventListener('resize', () => {
         chart.resize();
       });
-
-    } else {
-      document.getElementById('radarChart').innerHTML = '<p style="text-align:center; margin-top:2rem; color:gray;">No hay datos suficientes para mostrar el gráfico radar.</p>';
-      console.log("No hay datos suficientes para mostrar el gráfico radar.");
     }
+    // else {
+    //   document.getElementById('radarChart').innerHTML = '<p style="text-align:center; margin-top:2rem; color:gray;">No hay datos suficientes para mostrar el gráfico radar.</p>';
+    //   console.log("No hay datos suficientes para mostrar el gráfico radar.");
+    // }
   </script>
 
   <footer class="footer">
