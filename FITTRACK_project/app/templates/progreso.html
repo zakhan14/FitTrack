@@ -26,103 +26,86 @@
   </header>
 
   <h2 style="text-align: left; margin-left: 26%;">Introduce tus valores</h2>
-<div id="contenedor-formulario-grafico">
-  <form method="post" id="calcForm">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" name="guardar">Guardar nueva medición</button>
-  </form>
+  <div id="contenedor-formulario-grafico">
+    <form method="post" id="calcForm">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" name="guardar">Guardar nueva medición</button>
+      <button type="submit" name="comparar">Comparar</button>
+    </form>
+    
+    {% if labels %}
+      <h3 style="text-align:center;">Comparando: {{ labels.0 }} vs {{ labels.1 }}</h3>
+    {% endif %}
 
-  <div id="selector-mediciones" style="margin-top:20px;">
-    <h3>Selecciona mediciones para comparar:</h3>
-    <p>
-      <label><input type="checkbox" class="medicion-checkbox" value="all" checked disabled> Seleccionar todo (solo para mostrar)</label>
-    </p>
-    <!-- Aquí JS llenará los botones de checkboxes -->
+    {{ data_radar|json_script:"data-radar" }}
+    {{ indicator|json_script:"indicator-data" }}
+    {{ labels|json_script:"labels-data" }}
   </div>
+<!-- {% if data_radar and indicator %}
+  <div class="grafico-radar" id="radarChart"></div>
+{% endif %} -->
 
-  <div id="radarChart" style="width: 100%; height: 500px; margin-top: 30px;"></div>
-</div>
+  <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+  <script>
+    const dataRadarRaw = document.getElementById('data-radar').textContent;
+    const indicatorRaw = document.getElementById('indicator-data').textContent;
+    const labelsRaw = document.getElementById('labels-data').textContent;
 
-<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
-<script>
-  const indicatorData = JSON.parse('{{ indicator|escapejs }}');
-  const medicionesData = JSON.parse('{{ mediciones_data|escapejs }}');
+    let dataRadar = [], indicatorData = [], labelsData = [];
 
-  const container = document.getElementById('selector-mediciones');
-
-  // Generar checkboxes para cada medición
-  medicionesData.forEach(med => {
-    const p = document.createElement('p');
-    const label = document.createElement('label');
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.className = 'medicion-checkbox';
-    checkbox.value = med.id;
-    label.appendChild(checkbox);
-    label.appendChild(document.createTextNode(` Medición ${med.fecha}`));
-    p.appendChild(label);
-    container.appendChild(p);
-  });
-
-  // Inicializar gráfico vacío
-  const chart = echarts.init(document.getElementById('radarChart'));
-
-  function actualizarGrafico(seleccionados) {
-    if (seleccionados.length === 0) {
-      chart.clear();
-      return;
+    try {
+      dataRadar = JSON.parse(dataRadarRaw);
+      indicatorData = JSON.parse(indicatorRaw);
+      labelsData = JSON.parse(labelsRaw);
+    } catch(e) {
+      console.error("Error parsing JSON:", e);
     }
 
-    const dataRadar = [];
-    const labelsData = [];
+    console.log("Datos recibidos para el radar:", dataRadar);
+    console.log("Indicadores:", indicatorData);
+    console.log("Etiquetas:", labelsData);
 
-    seleccionados.forEach(id => {
-      const med = medicionesData.find(m => m.id == id);
-      if(med) {
-        dataRadar.push(med.data);
-        labelsData.push(`Medición ${med.fecha}`);
+    if (Array.isArray(dataRadar) && dataRadar.length > 0 && Array.isArray(indicatorData) && indicatorData.length > 0) {
+      // Asegura que cada elemento sea un array de valores
+      if (!Array.isArray(dataRadar[0])) {
+        dataRadar = [dataRadar];
       }
-    });
 
-    const option = {
-      backgroundColor: 'transparent',
-      title: { text: 'Comparativa Corporal' },
-      tooltip: {},
-      legend: { data: labelsData },
-      radar: { indicator: indicatorData },
-      series: [{
-        name: 'Mediciones',
-        type: 'radar',
-        data: dataRadar.map((val, idx) => ({
-          value: val,
-          name: labelsData[idx]
-        }))
-      }]
-    };
-    chart.setOption(option);
-  }
+      const chart = echarts.init(document.getElementById('radarChart'));
 
-  // Al iniciar, mostrar todas seleccionadas
-  const checkboxes = document.querySelectorAll('.medicion-checkbox');
-  checkboxes.forEach(cb => cb.checked = true);
-  actualizarGrafico(medicionesData.map(m => m.id));
+      const option = {
+        backgroundColor: 'transparent', // fondo transparente para el gráfico
+        title: {
+          text: 'Comparativa Corporal'
+        },
+        tooltip: {},
+        legend: {
+          data: labelsData
+        },
+        radar: {
+          indicator: indicatorData
+        },
+        series: [{
+          name: 'Mediciones',
+          type: 'radar',
+          data: dataRadar.map((val, idx) => ({
+            value: val,
+            name: labelsData[idx] || `Serie ${idx + 1}`
+          }))
+        }]
+      };
 
-  // Añadir evento para actualizar gráfico según selección
-  checkboxes.forEach(cb => {
-    cb.addEventListener('change', () => {
-      const seleccionados = Array.from(checkboxes)
-        .filter(ch => ch.checked && ch.value !== "all")
-        .map(ch => ch.value);
-      actualizarGrafico(seleccionados);
-    });
-  });
-</script>
+      chart.setOption(option);
 
-    <!-- // else {
+      window.addEventListener('resize', () => {
+        chart.resize();
+      });
+    }
+    // else {
     //   document.getElementById('radarChart').innerHTML = '<p style="text-align:center; margin-top:2rem; color:gray;">No hay datos suficientes para mostrar el gráfico radar.</p>';
     //   console.log("No hay datos suficientes para mostrar el gráfico radar.");
-    // } -->
+    // }
   </script>
 
   <footer class="footer">
