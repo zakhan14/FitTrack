@@ -102,9 +102,9 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
         indicator = [
             {'name': 'Altura', 'max': 220},
             {'name': 'Peso', 'max': 120},
-            {'name': 'Grasa corporal', 'max': 40},
-            {'name': 'Masa muscular', 'max': 60},
-            {'name': 'Líquido corporal', 'max': 70},
+            {'name': 'Grasa corporal %', 'max': 40},
+            {'name': 'Masa muscular %', 'max': 60},
+            {'name': 'Líquido corporal %', 'max': 70},
         ]
 
         if form.is_valid():
@@ -117,7 +117,6 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
             elif 'comparar' in request.POST:
                 # Última medición guardada del usuario
                 ultima = self.object_list.first()  # ya ordenadas por fecha descendente
-
                 current_data = form.cleaned_data  # datos del formulario
 
                 dataRadar = []
@@ -144,20 +143,14 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
                 ])
                 labels.append("Formulario (sin guardar)")
 
-                context = self.get_context_data()
-                context.update({
-                    'data_radar': json.dumps(dataRadar, cls=DjangoJSONEncoder),
-                    'indicator': json.dumps([
-                        {'name': 'Altura', 'max': 220},
-                        {'name': 'Peso', 'max': 120},
-                        {'name': 'Grasa corporal %', 'max': 40},
-                        {'name': 'Masa muscular %', 'max': 60},
-                        {'name': 'Líquido corporal %', 'max': 70},
-                    ], cls=DjangoJSONEncoder),
-                    'labels': json.dumps(labels, cls=DjangoJSONEncoder),
+                # Devolvemos el contexto manualmente, evitando sobrescribir con get_context_data()
+                return self.render_to_response({
                     'form': form,
+                    'mediciones': self.object_list,
+                    'data_radar': json.dumps(dataRadar, cls=DjangoJSONEncoder),
+                    'indicator': json.dumps(indicator, cls=DjangoJSONEncoder),
+                    'labels': json.dumps(labels, cls=DjangoJSONEncoder),
                 })
-                return self.render_to_response(context)
 
         return self.form_invalid(form)
 # @login_required(login_url='log_in')
