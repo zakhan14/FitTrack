@@ -1,10 +1,9 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Gráfico de Rendimiento</title>
-    
+<head>
+  <meta charset="UTF-8" />
+  <title>Gráfico de Rendimiento</title>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
   <link rel="icon" href="{% static 'images/logo.png' %}">
   <link rel="stylesheet" href="{% static 'css/progress.css' %}" />
@@ -25,120 +24,79 @@
       <a href="{% url 'custom_logout' %}" class="btn">Log Out</a>
     </div>
   </header>
+  <form method="post" id="calcForm">
+    <h2>Introduce tus valores</h2>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" name="guardar">Guardar nueva medición</button>
+    <button type="submit" name="comparar">Comparar</button>
+  </form>
 
-  <h2 style="text-align: left; margin-left: 26%;">Introduce tus valores</h2>
-  <div id="contenedor-formulario-grafico">
-    <form method="post" id="calcForm">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" name="guardar">Guardar nueva medición</button>
-      <button type="submit" name="comparar">Comparar</button>
-    </form>
-  </div>
   {{ data_radar|json_script:"data-radar" }}
   {{ indicator|json_script:"indicator-data" }}
   {{ labels|json_script:"labels-data" }}
-  <div class="grafico-radar" id="radarChart"></div>
-  {% if data_radar and indicator %}
-  {% endif %}
-  
-<script>
-  // Recuperar los datos desde los elementos <script type="application/json">
-  const dataRadar = JSON.parse(document.getElementById('data-radar').textContent);
-  const indicatorData = JSON.parse(document.getElementById('indicator-data').textContent);
-  const labelsData = JSON.parse(document.getElementById('labels-data').textContent);
 
-  console.log("dataRadar", dataRadar);
-  console.log("labelsData", labelsData);
-  console.log("indicatorData", indicatorData);
+  <div id="radarChart" style="width:100%; height: 500px;"></div>
 
-  // Solo pintar si hay datos válidos
-  if (dataRadar.length > 0 && labelsData.length === 2) {
-    const chart = echarts.init(document.getElementById('radarChart'));
+  <script>
+    const dataRadarRaw = JSON.parse(document.getElementById('data-radar').textContent);
+    const indicatorData = JSON.parse(document.getElementById('indicator-data').textContent);
+    const labelsData = JSON.parse(document.getElementById('labels-data').textContent);
 
-    const option = {
-      backgroundColor: 'transparent',
-      title: {
-        text: 'Comparativa Corporal',
-        left: 'center',
-        top: 10,
-        textStyle: {
-          color: '#fff',
-          fontSize: 18
-        }
-      },
-      tooltip: {},
-      legend: {
-        data: labelsData,
-        bottom: 0,
-        textStyle: {
-          color: '#fff'
-        }
-      },
-      radar: {
-        indicator: indicatorData,
-        shape: 'polygon',
-        radius: 120,
-        name: {
-          textStyle: {
-            color: '#ffcc66'
-          }
+    let dataRadar = [];
+      try {
+        dataRadar = JSON.parse(dataRadarRaw);
+      } catch (e) {
+        console.error("Error al parsear dataRadar", e);
+      }
+
+      if (Array.isArray(dataRadar) && dataRadar.length > 0) {
+        const chart = echarts.init(document.getElementById('radarChart'));
+
+      const option = {
+        backgroundColor: 'black',
+        title: {
+          text: 'Comparativa Corporal',
+          left: 'center',
+          textStyle: { color: '#fff', fontSize: 18 }
         },
-        splitLine: {
-          lineStyle: {
-            color: '#444'
-          }
+        legend: {
+          data: labelsData,
+          bottom: 0,
+          textStyle: { color: '#fff' }
         },
-        splitArea: {
-          show: false
+        radar: {
+          indicator: [
+            { name: 'Altura', max: 250 },
+            { name: 'Peso', max: 220 },
+            { name: 'Grasa Corporal', max: 100 },
+            { name: 'Masa Muscular', max: 100 },
+            { name: 'Liquidos', max: 100 }
+          ],
+          shape: 'polygon',
+          radius: 120,
+          name: { textStyle: { color: '#ffcc66' } },
+          splitLine: { lineStyle: { color: '#444' } },
+          splitArea: { show: false },
+          axisLine: { lineStyle: { color: '#444' } }
         },
-        axisLine: {
-          lineStyle: {
-            color: '#444'
-          }
-        }
-      },
-      series: [{
-        name: 'Comparación',
-        type: 'radar',
-        data: [
-          {
-            value: dataRadar[0],
-            name: labelsData[0],
-            areaStyle: {
-              color: 'rgba(0, 255, 0, 0.4)'
-            },
-            lineStyle: {
-              color: 'rgba(0, 255, 0, 0.8)'
-            },
-            itemStyle: {
-              color: 'green'
-            }
-          },
-          {
-            value: dataRadar[1],
-            name: labelsData[1],
-            areaStyle: {
-              color: 'rgba(255, 215, 0, 0.4)'
-            },
-            lineStyle: {
-              color: 'rgba(255, 215, 0, 0.8)'
-            },
-            itemStyle: {
-              color: 'gold'
-            }
-          }
-        ]
-      }]
-    };
+        series: [{
+          type: 'radar',
+          data: dataRadar.map((val, i) => ({
+            value: val,
+            name: labelsData[i],
+            areaStyle: { opacity: 0.3 },
+            lineStyle: { width: 2 },
+            itemStyle: { opacity: 1 }
+          }))
+        }]
+      };
 
-    chart.setOption(option);
-  } else {
-    console.log("No hay datos suficientes para mostrar el gráfico radar.");
-  }
-</script>
-
-
+      chart.setOption(option);
+    } else {
+      document.getElementById('radarChart').innerHTML = '<h3 style="color: white; text-align: center">No hay datos para mostrar</h3>';
+    }
+  </script>
   <footer class="footer">
     <div class="footer-left">
       <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />

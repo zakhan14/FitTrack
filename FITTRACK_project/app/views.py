@@ -82,17 +82,31 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['form'] = self.get_form()
 
-        indicator = [
-            {'name': 'Altura', 'max': 220},
-            {'name': 'Peso', 'max': 120},
-            {'name': 'Grasa corporal', 'max': 40},
-            {'name': 'Masa muscular', 'max': 60},
-            {'name': 'Líquido corporal', 'max': 70},
-        ]
-        context['indicator'] = json.dumps(indicator, cls=DjangoJSONEncoder)
-        context['data_radar'] = json.dumps([], cls=DjangoJSONEncoder)
-        context['labels'] = json.dumps([], cls=DjangoJSONEncoder)
+        ultima = self.get_queryset().first()
+        dataRadar = []
+        labels = []
 
+        if ultima:
+            dataRadar.append([
+                float(ultima.height),
+                float(ultima.weight),
+                float(ultima.grasa_corporal),
+                float(ultima.masa_muscular),
+                float(ultima.liquido_corporal)
+            ])
+            labels.append("Última medición")
+
+        indicator = [
+            {'name': 'height', 'max': 220},
+            {'name': 'weight', 'max': 120},
+            {'name': 'grasa_corporal', 'max': 40},
+            {'name': 'masa_muscular', 'max': 60},
+            {'name': 'liquido_corporal', 'max': 70},
+        ]
+
+        context['indicator'] = json.dumps(indicator, cls=DjangoJSONEncoder)
+        context['data_radar'] = json.dumps(dataRadar, cls=DjangoJSONEncoder)
+        context['labels'] = json.dumps(labels, cls=DjangoJSONEncoder)
         return context
 
     def post(self, request, *args, **kwargs):
@@ -100,11 +114,11 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
         form = self.get_form()
 
         indicator = [
-            {'name': 'Altura', 'max': 220},
-            {'name': 'Peso', 'max': 120},
-            {'name': 'Grasa corporal %', 'max': 40},
-            {'name': 'Masa muscular %', 'max': 60},
-            {'name': 'Líquido corporal %', 'max': 70},
+            {'name': 'height', 'max': 220},
+            {'name': 'weight', 'max': 120},
+            {'name': 'grasa_corporal', 'max': 40},
+            {'name': 'masa_muscular', 'max': 60},
+            {'name': 'liquido_corporal', 'max': 70},
         ]
 
         if form.is_valid():
@@ -115,35 +129,31 @@ class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
                 return redirect('progreso')
 
             elif 'comparar' in request.POST:
-                # Última medición guardada del usuario
-                ultima = self.object_list.first()  # ya ordenadas por fecha descendente
-                current_data = form.cleaned_data  # datos del formulario
+                ultima = self.object_list.first()
+                current_data = form.cleaned_data
 
                 dataRadar = []
                 labels = []
 
-                # Verde: base de datos
                 if ultima:
                     dataRadar.append([
-                        ultima.height,
-                        ultima.weight,
-                        ultima.grasa_corporal,
-                        ultima.masa_muscular,
-                        ultima.liquido_corporal
+                        float(ultima.height),
+                        float(ultima.weight),
+                        float(ultima.grasa_corporal),
+                        float(ultima.masa_muscular),
+                        float(ultima.liquido_corporal)
                     ])
                     labels.append("Última medición")
 
-                # Amarillo: formulario actual
                 dataRadar.append([
-                    current_data['height'],
-                    current_data['weight'],
-                    current_data['grasa_corporal'],
-                    current_data['masa_muscular'],
-                    current_data['liquido_corporal']
+                    float(current_data['height']),
+                    float(current_data['weight']),
+                    float(current_data['grasa_corporal']),
+                    float(current_data['masa_muscular']),
+                    float(current_data['liquido_corporal'])
                 ])
                 labels.append("Formulario (sin guardar)")
 
-                # Devolvemos el contexto manualmente, evitando sobrescribir con get_context_data()
                 return self.render_to_response({
                     'form': form,
                     'mediciones': self.object_list,
