@@ -5,13 +5,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FitTracker</title>
-  <!-- <link rel="icon" href="{% static 'images/logo.png' %}"> -->
+
+  <!-- Favicon -->
+  <link rel="icon" href="{% static 'images/logo.png' %}">
+  <link rel="shortcut icon" href="{% static 'images/logo.png' %}">
+
+  <!-- Estilos e iconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="stylesheet" href="{% static 'css/index.css' %}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
 </head>
+
 <body>
 
 <header class="navbar">
@@ -58,9 +64,11 @@
       <a href="{% url 'sign_up' %}" class="btn">Comenzar Gratis</a>
     {% endif %}
   </section>
+
   <section class="main-image">
     <img src="{% static 'images/entrenamiento.jpg' %}" alt="Entrenamiento deportivo" />
   </section>
+
   <section class="benefits">
     <h2>¿Por qué elegir FitTracker?</h2>
     <ul>
@@ -70,29 +78,38 @@
       <li>📅 Planifica y organiza tus entrenamientos semanalmente</li>
     </ul>
   </section>
+
   <section class="main-image">
     <img src="{% static 'images/yo.png' %}" alt="Entrenamiento deportivo" />
   </section>
 
-<section class="testimonials">
-  <h2>Lo que dicen nuestros usuarios</h2>
-  <blockquote>
-    <p>"FitTracker me ayudó a mejorar mi rendimiento en solo 3 meses. ¡Totalmente recomendado!"</p>
-    <footer>- Carlos M.</footer>
-  </blockquote>
-  <blockquote>
-    <p>"La forma de registrar mis entrenamientos y ver gráficos me motiva mucho cada día."</p>
-    <footer>- Ana P.</footer>
-  </blockquote>
-</section>
+  <section class="testimonials">
+    <h2>Lo que dicen nuestros usuarios</h2>
+    <blockquote>
+      <p>"FitTracker me ayudó a mejorar mi rendimiento en solo 3 meses. ¡Totalmente recomendado!"</p>
+      <footer>- Carlos M.</footer>
+    </blockquote>
+    <blockquote>
+      <p>"La forma de registrar mis entrenamientos y ver gráficos me motiva mucho cada día."</p>
+      <footer>- Ana P.</footer>
+    </blockquote>
+  </section>
 
-<section class="cta">
-  <h2>¡Empieza tu progreso hoy mismo!</h2>
-  <p>Regístrate gratis y obtén acceso completo a tu diario de entrenamiento.</p>
-  <a href="{% url 'sign_up' %}" class="btn btn-primary">Comenzar Gratis</a>
-</section>
-
+  <section class="cta">
+    <h2>¡Empieza tu progreso hoy mismo!</h2>
+    <p>Regístrate gratis y obtén acceso completo a tu diario de entrenamiento.</p>
+    <a href="{% url 'sign_up' %}" class="btn btn-primary">Comenzar Gratis</a>
+  </section>
 </main>
+
+<!-- Banner de cookies -->
+<div id="cookie-banner" style="display:none; position:fixed; bottom:0; width:100%; background-color:#f5f5f5; padding:1rem; text-align:center; z-index:1000; box-shadow: 0 -2px 5px rgba(0,0,0,0.1);">
+  <p style="margin:0; padding:0.5rem;">
+    Usamos cookies para mejorar tu experiencia. Puedes aceptar o rechazar las cookies analíticas.
+    <button id="btn-accept" style="margin-left: 1rem;">Aceptar</button>
+    <button id="btn-reject" style="margin-left: 0.5rem;">Rechazar</button>
+  </p>
+</div>
 
 <footer class="footer">
   <div class="footer-left">
@@ -107,8 +124,15 @@
       <a href="https://www.instagram.com/_zakhan_" target="_blank" aria-label="Instagram">
         <i class="bi bi-instagram"></i>
       </a>
+      <a href="{% url 'cookies' %}" target="_blank" aria-label="Cookies">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cookie" viewBox="0 0 16 16">
+          <path d="M6 7.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m4.5.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m-.5 3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+          <path d="M8 0a7.96 7.96 0 0 0-4.075 1.114q-.245.102-.437.28A8 8 0 1 0 8 0m3.25 14.201a1.5 1.5 0 0 0-2.13.71A7 7 0 0 1 8 15a6.97 6.97 0 0 1-3.845-1.15 1.5 1.5 0 1 0-2.005-2.005A6.97 6.97 0 0 1 1 8c0-1.953.8-3.719 2.09-4.989a1.5 1.5 0 1 0 2.469-1.574A7 7 0 0 1 8 1c1.42 0 2.742.423 3.845 1.15a1.5 1.5 0 1 0 2.005 2.005A6.97 6.97 0 0 1 15 8c0 .596-.074 1.174-.214 1.727a1.5 1.5 0 1 0-1.025 2.25 7 7 0 0 1-2.51 2.224Z"/>
+        </svg>
+      </a>
     </div>
   </div>
+
   <div class="footer-columns">
     <div class="footer-column">
       <h4>Contacto</h4>
@@ -125,8 +149,12 @@
       <p>Síguenos en Facebook, <br />TikTok e Instagram.</p>
     </div>
   </div>
+
 </footer>
 
+<!-- Scripts -->
 <script src="{% static 'js/burguer.js' %}"></script>
+<script src="{% static 'js/cookie_banner.js' %}"></script>
+
 </body>
 </html>

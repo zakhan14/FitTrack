@@ -10,4 +10,5 @@ urlpatterns = [
     path('log_in/', views.log_in, name='log_in'),
     path('sign_up/', views.sign_up, name='sign_up'), 
     path('logout/', custom_logout, name='custom_logout'),
+    path('cookies/', views.cookies, name='cookies'),
 ]

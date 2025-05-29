@@ -17,6 +17,8 @@ User = get_user_model()
 
 def index(request):
     return render(request, 'index.html')
+def cookies(request):
+    return render(request, 'cookies.html')
 
 def sign_up(request):
     if request.method == 'POST':
@@ -40,6 +42,7 @@ def log_in(request):
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
+            remember_me = request.POST.get('remember_me')  # Nuevo
 
             try:
                 user = User.objects.get(email=email)
@@ -49,6 +52,14 @@ def log_in(request):
 
             if user is not None:
                 login(request, user)
+
+                if not remember_me:
+                    # Expira al cerrar navegador
+                    request.session.set_expiry(0)
+                else:
+                    # O dejar como lo tienes por defecto (2 semanas, por ejemplo)
+                    request.session.set_expiry(60 * 60 * 24 * 14)  # 2 semanas
+
                 redirect_to = request.POST.get('next', next_url)
                 if url_has_allowed_host_and_scheme(redirect_to, allowed_hosts={request.get_host()}):
                     return redirect(redirect_to)
@@ -60,7 +71,6 @@ def log_in(request):
         form = CustomLoginForm()
 
     return render(request, 'log_in.html', {'form': form, 'next': next_url})
-
 @login_required(login_url='log_in')
 def detalle(request):
     id = request.GET.get('id')
