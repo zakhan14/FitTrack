@@ -254,16 +254,19 @@ nav.navbar-center a:hover::after {
   color: #000000;
 }
 footer {
-  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   background-color: white;
   border-top: 1px solid #ccc;
-  align-items: flex-start;
   padding: 40px;
-  font-family: Arial, sans-serif;
+  display: flex;
+  align-items: flex-start;
   justify-content: space-between;
   flex-wrap: wrap;
-  width: 100%;
-  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  z-index: 1000; /* para que quede sobre otros elementos */
 }
 
 .footer-left {
