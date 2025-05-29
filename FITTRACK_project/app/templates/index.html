@@ -50,7 +50,7 @@
       <p>Nos alegra verte de nuevo. Continúa mejorando tu rendimiento con FitTracker.</p>
       <a href="{% url 'entrenamiento' %}" class="btn">Ir a Entrenamientos</a>
     {% else %}
-      <h1>Tu Diario de Entrenamiento <br /> para Rendimiento y Progreso</h1>
+      <h2>Tu Diario de Entrenamiento <br /> para Rendimiento y Progreso</h2>
       <p>
         Registra tus entrenamientos, analiza tu progreso y alcanza tus objetivos
         con Fittracker.
@@ -61,6 +61,37 @@
   <section class="main-image">
     <img src="{% static 'images/entrenamiento.jpg' %}" alt="Entrenamiento deportivo" />
   </section>
+  <section class="benefits">
+    <h2>¿Por qué elegir FitTracker?</h2>
+    <ul>
+      <li>📈 Visualiza tu progreso con gráficos fáciles de entender</li>
+      <li>⚽ Diseñado para deportistas de todos los niveles</li>
+      <li>🔒 Tus datos siempre seguros y privados</li>
+      <li>📅 Planifica y organiza tus entrenamientos semanalmente</li>
+    </ul>
+  </section>
+  <section class="main-image">
+    <img src="{% static 'images/yo.png' %}" alt="Entrenamiento deportivo" />
+  </section>
+
+<section class="testimonials">
+  <h2>Lo que dicen nuestros usuarios</h2>
+  <blockquote>
+    <p>"FitTracker me ayudó a mejorar mi rendimiento en solo 3 meses. ¡Totalmente recomendado!"</p>
+    <footer>- Carlos M.</footer>
+  </blockquote>
+  <blockquote>
+    <p>"La forma de registrar mis entrenamientos y ver gráficos me motiva mucho cada día."</p>
+    <footer>- Ana P.</footer>
+  </blockquote>
+</section>
+
+<section class="cta">
+  <h2>¡Empieza tu progreso hoy mismo!</h2>
+  <p>Regístrate gratis y obtén acceso completo a tu diario de entrenamiento.</p>
+  <a href="{% url 'sign_up' %}" class="btn btn-primary">Comenzar Gratis</a>
+</section>
+
 </main>
 
 <footer class="footer">

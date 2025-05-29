@@ -24,7 +24,7 @@ document.getElementById('calcForm').addEventListener('submit', function (e) {
         { name: 'Peso (kg)', max: 200 },
         { name: 'Grasa (%)', max: 100 },
         { name: 'Músculo (%)', max: 100 },
-        { name: 'Líquidos (%)', max: 100 }
+        { name: 'Liquidos (%)', max: 100 }
       ],
       shape: 'circle',
       splitNumber: 5,

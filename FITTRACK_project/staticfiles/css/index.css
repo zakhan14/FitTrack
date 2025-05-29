@@ -149,16 +149,108 @@ main {
 
 /* Imagen principal */
 .main-image {
-  flex: 1;
+  flex: 1 1 400px;
   text-align: center;
 }
-
 .main-image img {
   width: 100%;
   max-width: 450px;
   border-radius: 20px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.15);
   height: auto;
+}
+/* Beneficios */
+.benefits {
+  max-width: 800px;
+  margin: 60px auto 40px;
+  padding: 0 20px;
+  text-align: center;
+}
+.benefits h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+  color: #000;
+}
+.benefits ul {
+  list-style: none;
+  padding-left: 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+.benefits ul li {
+  margin-bottom: 15px;
+}
+
+/* Testimonios */
+.testimonials {
+  max-width: 700px;
+  margin: 60px auto 40px;
+  padding: 0 20px;
+  text-align: center;
+}
+.testimonials h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #000;
+}
+.testimonials blockquote {
+  background-color: #f0f0f0;
+  border-left: 6px solid #a9bbd8;
+  padding: 20px 25px;
+  margin-bottom: 20px;
+  font-style: italic;
+  color: #555;
+  border-radius: 8px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.testimonials blockquote footer {
+  margin-top: 10px;
+  font-weight: 600;
+  font-style: normal;
+  color: #000;
+}
+
+/* CTA (Llamada a la acción) */
+.cta {
+  max-width: 600px;
+  margin: 60px auto 80px;
+  padding: 30px 25px;
+  text-align: center;
+  background-color: #a9bbd8;
+  border-radius: 15px;
+  color: white;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+.cta h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 2.2rem;
+  margin-bottom: 15px;
+}
+.cta p {
+  font-size: 1.2rem;
+  margin-bottom: 25px;
+}
+.cta .btn-primary {
+  background-color: #000000;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+}
+.cta .btn-primary:hover {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000;
 }
 
 /* Footer */
@@ -216,53 +308,67 @@ footer {
   margin: 0;
 }
 @media screen and (max-width: 700px) {
-    .abrir-menu,
-    .cerrar-menu {
-        display: block;
-        border: 0;
-        font-size: 1.25rem;
-        background-color: transparent;
-        cursor: pointer;
-    }
-
-    .abrir-menu {
-        color: #1c1c1c;
-    }
-
-    .cerrar-menu {
-        color: #ececec;
-    }
-
-    .nav {
-        opacity: 0;
-        visibility: hidden;
-        display: flex;
-        flex-direction: column;
-        align-items: end;
-        gap: 1rem;
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #1c1c1c;
-        padding: 2rem;
-        box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .5);
-    }
-
-    .nav.visible {
-        opacity: 1;
-        visibility: visible;
-    }
-    
-    .nav-list {
-        flex-direction: column;
-        align-items: end;
-    }
-
-    .nav-list li a {
-        color: #ecececec;
-    }
-    #busca{
-      color: #ccc;
-    }
+  .abrir-menu,
+  .cerrar-menu {
+    display: block;
+  }
+  .nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #1c1c1c;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 2rem;
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.7);
+    gap: 1.5rem;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 100;
+  }
+  .nav.visible {
+    transform: translateX(0);
+  }
+  .nav-list {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1rem;
+  }
+  .nav-list li a {
+    color: #ececec;
+    font-size: 1.2rem;
+  }
+  #busca {
+    color: #ccc;
+  }
+  main {
+    margin: 20px 10px 50px;
+    flex-direction: column;
+    gap: 30px;
+  }
+  .main-text, .main-image {
+    flex: 1 1 100%;
+    text-align: center;
+  }
+  .main-text h1 {
+    font-size: 2rem;
+  }
+  .benefits, .testimonials, .cta {
+    margin: 30px 15px;
+    padding: 15px;
+  }
+  .benefits h2, .testimonials h2, .cta h2 {
+    font-size: 1.8rem;
+  }
+  .footer {
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 15px;
+  }
+  .footer-columns {
+    flex-direction: column;
+    gap: 25px;
+    width: 100%;
+  }
 }
