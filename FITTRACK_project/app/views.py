@@ -61,12 +61,11 @@ def log_in(request):
 
     return render(request, 'log_in.html', {'form': form, 'next': next_url})
 
-
+@login_required(login_url='log_in')
 def detalle(request):
     id = request.GET.get('id')
     return render(request, 'detalle.html', {'id': id})
 
-@login_required(login_url='log_in')
 class ProgresoView(LoginRequiredMixin, FormMixin, ListView):
     model = BodyData
     template_name = 'progreso.html'
