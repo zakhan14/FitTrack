@@ -6,12 +6,13 @@ from .models import BodyData
 User = get_user_model()
 
 class SignUpForm(forms.ModelForm):
+    username = forms.CharField(label="Usuario")
     password = forms.CharField(label="Contraseña", widget=forms.PasswordInput, strip=False)
     confirm_password = forms.CharField(label="Confirmar contraseña", widget=forms.PasswordInput, strip=False)
 
     class Meta:
         model = User
-        fields = ('nickname', 'email')
+        fields = ('username', 'email')
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -33,7 +34,6 @@ class SignUpForm(forms.ModelForm):
         if commit:
             user.save()
         return user
-
 
 class CustomLoginForm(forms.Form):
     email = forms.EmailField(label="Correo electrónico")

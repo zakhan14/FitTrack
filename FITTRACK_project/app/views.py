@@ -22,7 +22,9 @@ def sign_up(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            user.nickname = user.email.split('@')[0]  # Opcional si usas nickname
+            user.save()
             login(request, user)
             return redirect('index')
     else:
