@@ -46,7 +46,7 @@
 <main>
   <section class="main-text">
     {% if user.is_authenticated %}
-      <h1>Bienvenido, {{ user.nickname|default:user.username }} 👋</h1>
+      <h1>Bienvenido, {{ user.username }} 👋</h1>
       <p>Nos alegra verte de nuevo. Continúa mejorando tu rendimiento con FitTracker.</p>
       <a href="{% url 'entrenamiento' %}" class="btn">Ir a Entrenamientos</a>
     {% else %}
